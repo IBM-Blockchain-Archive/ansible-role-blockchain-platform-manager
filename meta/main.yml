@@ -1,5 +1,5 @@
 galaxy_info:
-  role_name: blockchain-platform-manager
+  role_name: blockchain_platform_manager
   author: IBM Blockchain Platform
   description: Ansible role for managing blockchain networks using the IBM Blockchain Platform
   company: IBM
