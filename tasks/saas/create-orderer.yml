@@ -29,11 +29,11 @@
 
 - name: Get the list of components
   uri:
-    url: "{{ service_creds.api_endpoint }}/ak/api/v1/components"
+    url: "{{ infrastructure.saas.api_endpoint }}/ak/api/v1/components"
     method: GET
     return_content: yes
     headers:
-      Authorization: "Bearer {{ auth.json.access_token }}"
+      Authorization: "Bearer {{ ibp.saas.access_token }}"
   register: ibp_components
 
 - name: Check for orderer
@@ -42,21 +42,21 @@
 
 - name: Create orderer
   uri:
-    url: "{{ service_creds.api_endpoint }}/ak/api/v1/kubernetes/components/orderer"
+    url: "{{ infrastructure.saas.api_endpoint }}/ak/api/v1/kubernetes/components/orderer"
     method: POST
     headers:
-      Authorization: "Bearer {{ auth.json.access_token }}"
+      Authorization: "Bearer {{ ibp.saas.access_token }}"
     body_format: json
-    body: "{{ lookup('template', 'ibp/create-orderer.json.j2') }}"
+    body: "{{ lookup('template', 'saas/create-orderer.json.j2') }}"
   when: ibp_orderer_count == "0"
 
 - name: Get the list of components
   uri:
-    url: "{{ service_creds.api_endpoint }}/ak/api/v1/components"
+    url: "{{ infrastructure.saas.api_endpoint }}/ak/api/v1/components"
     method: GET
     return_content: yes
     headers:
-      Authorization: "Bearer {{ auth.json.access_token }}"
+      Authorization: "Bearer {{ ibp.saas.access_token }}"
   register: ibp_components
 
 - name: Get orderer
@@ -79,5 +79,5 @@
 
 - name: Create node JSON file
   copy:
-    content: "{{ lookup('template', 'ibp/orderer-node.json.j2') | to_nice_json }}"
+    content: "{{ lookup('template', 'saas/orderer-node.json.j2') | to_nice_json }}"
     dest: "{{ organization.nodes }}/{{ orderer.id }}.json"

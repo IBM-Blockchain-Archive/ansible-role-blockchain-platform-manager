@@ -4,33 +4,33 @@
 ---
 - name: Check for certificate authority
   uri:
-    url: "{{ service_creds.api_endpoint }}/ak/api/v1/components/{{ ca.id }}"
+    url: "{{ infrastructure.saas.api_endpoint }}/ak/api/v1/components/{{ ca.id }}"
     method: HEAD
     return_content: yes
     status_code:
     - "200"
     - "404"
     headers:
-      Authorization: "Bearer {{ auth.json.access_token }}"
+      Authorization: "Bearer {{ ibp.saas.access_token }}"
   register: ibp_ca
 
 - name: Create certificate authority
   uri:
-    url: "{{ service_creds.api_endpoint }}/ak/api/v1/kubernetes/components/ca"
+    url: "{{ infrastructure.saas.api_endpoint }}/ak/api/v1/kubernetes/components/ca"
     method: POST
     headers:
-      Authorization: "Bearer {{ auth.json.access_token }}"
+      Authorization: "Bearer {{ ibp.saas.access_token }}"
     body_format: json
-    body: "{{ lookup('template', 'ibp/create-ca.json.j2') }}"
+    body: "{{ lookup('template', 'saas/create-ca.json.j2') }}"
   when: ibp_ca.status == 404
 
 - name: Get certificate authority
   uri:
-    url: "{{ service_creds.api_endpoint }}/ak/api/v1/components/{{ ca.id }}"
+    url: "{{ infrastructure.saas.api_endpoint }}/ak/api/v1/components/{{ ca.id }}"
     method: GET
     return_content: yes
     headers:
-      Authorization: "Bearer {{ auth.json.access_token }}"
+      Authorization: "Bearer {{ ibp.saas.access_token }}"
   register: ibp_ca
 
 - name: Wait for certificate authority to start
@@ -75,5 +75,5 @@
 
 - name: Create node JSON file
   copy:
-    content: "{{ lookup('template', 'ibp/ca-node.json.j2') | to_nice_json }}"
+    content: "{{ lookup('template', 'saas/ca-node.json.j2') | to_nice_json }}"
     dest: "{{ organization.nodes }}/{{ ca.id }}.json"

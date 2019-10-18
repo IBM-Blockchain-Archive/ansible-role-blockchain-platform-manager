@@ -29,33 +29,33 @@
 
 - name: Check for peer
   uri:
-    url: "{{ service_creds.api_endpoint }}/ak/api/v1/components/{{ peer.id }}"
+    url: "{{ infrastructure.saas.api_endpoint }}/ak/api/v1/components/{{ peer.id }}"
     method: HEAD
     return_content: yes
     status_code:
     - "200"
     - "404"
     headers:
-      Authorization: "Bearer {{ auth.json.access_token }}"
+      Authorization: "Bearer {{ ibp.saas.access_token }}"
   register: ibp_peer
 
 - name: Create peer
   uri:
-    url: "{{ service_creds.api_endpoint }}/ak/api/v1/kubernetes/components/peer"
+    url: "{{ infrastructure.saas.api_endpoint }}/ak/api/v1/kubernetes/components/peer"
     method: POST
     headers:
-      Authorization: "Bearer {{ auth.json.access_token }}"
+      Authorization: "Bearer {{ ibp.saas.access_token }}"
     body_format: json
-    body: "{{ lookup('template', 'ibp/create-peer.json.j2') }}"
+    body: "{{ lookup('template', 'saas/create-peer.json.j2') }}"
   when: ibp_peer.status == 404
 
 - name: Get peer
   uri:
-    url: "{{ service_creds.api_endpoint }}/ak/api/v1/components/{{ peer.id }}"
+    url: "{{ infrastructure.saas.api_endpoint }}/ak/api/v1/components/{{ peer.id }}"
     method: GET
     return_content: yes
     headers:
-      Authorization: "Bearer {{ auth.json.access_token }}"
+      Authorization: "Bearer {{ ibp.saas.access_token }}"
   register: ibp_peer
 
 - name: Wait for peer to start
@@ -74,5 +74,5 @@
 
 - name: Create node JSON file
   copy:
-    content: "{{ lookup('template', 'ibp/peer-node.json.j2') | to_nice_json }}"
+    content: "{{ lookup('template', 'saas/peer-node.json.j2') | to_nice_json }}"
     dest: "{{ organization.nodes }}/{{ peer.id }}.json"
