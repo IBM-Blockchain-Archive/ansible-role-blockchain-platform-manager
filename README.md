@@ -7,13 +7,19 @@ Requirements
 ------------
 
 This Ansible role requires the following pre-requisites:
+- Python 3.7+
+  - https://www.python.org/
 - Ansible 2.8+
-- Fabric CLI, available in the PATH (`configtxgen`, `peer`, etc)
-- Fabric CA CLI, available in the PATH (`fabric-ca-client`)
+  - `pip install ansible`
+- Hyperledger Fabric binaries (`configtxgen`, `peer`, `fabric-ca-client`, etc)
+  - https://hyperledger-fabric.readthedocs.io/en/release-1.4/install.html
 - One of the following supported deployment targets:
   - IBM Blockchain Platform on IBM Cloud
-  - IBM Blockchain Platform on Red Hat OpenShift (coming soon)
+  - IBM Blockchain Platform on Red Hat OpenShift (coming soon!)
   - Docker 19.03+
+- Docker SDK for Python (if using Docker)
+  - `pip install docker`
+- `sponge` (from `moreutils`)
 
 Role Variables
 --------------
