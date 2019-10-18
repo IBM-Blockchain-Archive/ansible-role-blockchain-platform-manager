@@ -1,0 +1,170 @@
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+---
+- name: Ensure Docker network exists
+  docker_network:
+    name: "{{ infrastructure.docker.network }}"
+    state: present
+
+- name: Register the user for the orderer
+  include_tasks: register-user.yml
+  vars:
+    protocol: "{{ ibp[organization.ca.id].protocol }}"
+    hostname: "{{ ibp[organization.ca.id].hostname }}"
+    port: "{{ ibp[organization.ca.id].port }}"
+    caname: "{{ ibp[organization.ca.id].caname }}"
+    identity: "{{ orderer.identity }}"
+    secret: "{{ orderer.secret }}"
+    type: peer
+    registrar: "{{ organization.ca.admin_identity }}"
+
+- name: Enroll the user for the orderer
+  include_tasks: enroll-user.yml
+  vars:
+    protocol: "{{ ibp[organization.ca.id].protocol }}"
+    hostname: "{{ ibp[organization.ca.id].hostname }}"
+    port: "{{ ibp[organization.ca.id].port }}"
+    caname: "{{ ibp[organization.ca.id].caname }}"
+    identity: "{{ orderer.identity }}"
+    secret: "{{ orderer.secret }}"
+    msp_id: "{{ organization.msp.id }}"
+    private: true
+
+- name: Register the TLS user for the orderer
+  include_tasks: register-tls-user.yml
+  vars:
+    protocol: "{{ ibp[organization.ca.id].protocol }}"
+    hostname: "{{ ibp[organization.ca.id].hostname }}"
+    port: "{{ ibp[organization.ca.id].port }}"
+    caname: "{{ ibp[organization.ca.id].tlscaname }}"
+    identity: "{{ orderer.tls.identity }}"
+    secret: "{{ orderer.tls.secret }}"
+    type: orderer
+    registrar: "{{ organization.ca.admin_identity }}"
+  when: orderer.tls.enabled
+
+- name: Enroll the TLS user for the orderer
+  include_tasks: enroll-tls-user.yml
+  vars:
+    protocol: "{{ ibp[organization.ca.id].protocol }}"
+    hostname: "{{ ibp[organization.ca.id].hostname }}"
+    port: "{{ ibp[organization.ca.id].port }}"
+    caname: "{{ ibp[organization.ca.id].tlscaname }}"
+    identity: "{{ orderer.tls.identity }}"
+    secret: "{{ orderer.tls.secret }}"
+    hostnames: "{{ orderer.docker.name }},localhost"
+  when: orderer.tls.enabled
+
+- name: Add admin user for the MSP to the orderer
+  copy:
+    src: "{{ organization.wallet }}/{{ organization.msp.admin.identity }}/signcerts/"
+    dest: "{{ organization.wallet }}/{{ orderer.identity }}/admincerts/"
+
+- name: Add TLS CA root certificates for the MSP to the orderer
+  copy:
+    src: "{{ organization.wallet }}/tls-root.pem"
+    dest: "{{ organization.wallet }}/{{ orderer.identity }}/tlscacerts/"
+  when: orderer.tls.enabled
+
+- name: Add configuration for the MSP to the orderer
+  copy:
+    content: |
+      NodeOUs:
+          Enable: false
+    dest: "{{ organization.wallet }}/{{ orderer.identity }}/config.yaml"
+
+- name: Create orderer genesis block configuration file
+  copy:
+      content: "{{ lookup('template', 'docker/configtx.yaml.j2') }}"
+      dest: "{{ tempdir.path }}/configtx.yaml"
+
+- name: Create orderer genesis block
+  shell: >
+    configtxgen
+    -configPath {{ tempdir.path }}
+    -profile Solo
+    -channelID testchainid
+    -outputBlock {{ tempdir.path }}/genesis.block
+
+- name: Create orderer MSP volume
+  docker_volume:
+    name: "{{ orderer.docker.name }}-msp"
+    state: present
+
+- name: Create orderer TLS volume
+  docker_volume:
+    name: "{{ orderer.docker.name }}-tls"
+    state: present
+
+- name: Create orderer data volume
+  docker_volume:
+    name: "{{ orderer.docker.name }}-data"
+    state: present
+
+- name: Create temporary orderer container
+  docker_container:
+    name: "{{ orderer.docker.name }}-temp"
+    image: hyperledger/fabric-orderer
+    volumes:
+      - "{{ orderer.docker.name }}-msp:/etc/hyperledger/fabric/msp"
+      - "{{ orderer.docker.name }}-tls:/etc/hyperledger/fabric/tls"
+      - "{{ orderer.docker.name }}-data:/var/hyperledger/production"
+    state: stopped
+
+- name: Copy the orderer user enrollment into the orderer container
+  shell: >
+    docker cp
+    {{ organization.wallet }}/{{ orderer.identity }}/.
+    {{ orderer.docker.name }}-temp:/etc/hyperledger/fabric/msp/
+
+- name: Copy the orderer TLS user enrollment into the orderer container
+  shell: >
+    docker cp
+    {{ organization.wallet }}/{{ orderer.tls.identity }}/.
+    {{ orderer.docker.name }}-temp:/etc/hyperledger/fabric/tls/
+  when: orderer.tls.enabled
+
+- name: Copy the orderer genesis block into the orderer container
+  shell: >
+    docker cp
+    {{ tempdir.path }}/genesis.block
+    {{ orderer.docker.name }}-temp:/var/hyperledger/production/
+
+- name: Delete temporary orderer container
+  docker_container:
+    name: "{{ orderer.docker.name }}-temp"
+    state: absent
+
+- name: Start orderer container
+  docker_container:
+    name: "{{ orderer.docker.name }}"
+    image: hyperledger/fabric-orderer:1.4.3
+    networks:
+      - name: "{{ infrastructure.docker.network }}"
+    networks_cli_compatible: yes
+    env:
+      ORDERER_GENERAL_GENESISMETHOD: file
+      ORDERER_GENERAL_GENESISFILE: /var/hyperledger/production/genesis.block
+      ORDERER_GENERAL_LISTENADDRESS: 0.0.0.0
+      ORDERER_GENERAL_LISTENPORT: "{{ orderer.docker.port }}"
+      ORDERER_GENERAL_LOCALMSPID: "{{ organization.msp.id }}"
+      ORDERER_GENERAL_SYSTEMCHANNEL: testchainid
+      ORDERER_GENERAL_TLS_ENABLED: "{{ 'true' if orderer.tls.enabled else 'false' }}"
+    published_ports:
+      - "{{ orderer.docker.port }}:{{ orderer.docker.port }}"
+    volumes:
+      - "{{ orderer.docker.name }}-msp:/etc/hyperledger/fabric/msp"
+      - "{{ orderer.docker.name }}-tls:/etc/hyperledger/fabric/tls"
+      - "{{ orderer.docker.name }}-data:/var/hyperledger/production"
+    state: started
+    restart: yes
+
+- name: Update orderer facts
+  set_fact:
+    ibp: "{{ ibp | combine({ orderer.id: { 'protocol': 'grpcs' if orderer.tls.enabled else 'grpc', 'hostname': 'localhost', 'internal_hostname': orderer.docker.name, 'port': orderer.docker.port, 'pem': organization.wallet + '/tls-root.pem' if orderer.tls.enabled else '' } }, recursive=True) }}"
+
+- name: Create node JSON file
+  copy:
+    content: "{{ lookup('template', 'docker/orderer-node.json.j2') | to_nice_json }}"
+    dest: "{{ organization.nodes }}/{{ orderer.id }}.json"

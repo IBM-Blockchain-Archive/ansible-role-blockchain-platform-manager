@@ -1,0 +1,78 @@
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+---
+- name: Register the user for the peer
+  include_tasks: register-user.yml
+  vars:
+    protocol: "{{ ibp[organization.ca.id].protocol }}"
+    hostname: "{{ ibp[organization.ca.id].hostname }}"
+    port: "{{ ibp[organization.ca.id].port }}"
+    caname: "{{ ibp[organization.ca.id].caname }}"
+    identity: "{{ peer.identity }}"
+    secret: "{{ peer.secret }}"
+    type: peer
+    registrar: "{{ organization.ca.admin_identity }}"
+
+- name: Register the TLS user for the peer
+  include_tasks: register-tls-user.yml
+  vars:
+    protocol: "{{ ibp[organization.ca.id].protocol }}"
+    hostname: "{{ ibp[organization.ca.id].hostname }}"
+    port: "{{ ibp[organization.ca.id].port }}"
+    caname: "{{ ibp[organization.ca.id].tlscaname }}"
+    identity: "{{ peer.tls.identity }}"
+    secret: "{{ peer.tls.secret }}"
+    type: peer
+    registrar: "{{ organization.ca.admin_identity }}"
+  when: peer.tls.enabled
+
+- name: Check for peer
+  uri:
+    url: "{{ service_creds.api_endpoint }}/ak/api/v1/components/{{ peer.id }}"
+    method: HEAD
+    return_content: yes
+    status_code:
+    - "200"
+    - "404"
+    headers:
+      Authorization: "Bearer {{ auth.json.access_token }}"
+  register: ibp_peer
+
+- name: Create peer
+  uri:
+    url: "{{ service_creds.api_endpoint }}/ak/api/v1/kubernetes/components/peer"
+    method: POST
+    headers:
+      Authorization: "Bearer {{ auth.json.access_token }}"
+    body_format: json
+    body: "{{ lookup('template', 'ibp/create-peer.json.j2') }}"
+  when: ibp_peer.status == 404
+
+- name: Get peer
+  uri:
+    url: "{{ service_creds.api_endpoint }}/ak/api/v1/components/{{ peer.id }}"
+    method: GET
+    return_content: yes
+    headers:
+      Authorization: "Bearer {{ auth.json.access_token }}"
+  register: ibp_peer
+
+- name: Wait for peer to start
+  uri:
+    url: "{{ ibp_peer.json.operations_url }}/healthz"
+    status_code: "200"
+    validate_certs: no
+  register: result
+  until: result.status == 200
+  retries: 60
+  delay: 1
+
+- name: Update peer facts
+  set_fact:
+    ibp: "{{ ibp | combine({ peer.id: { 'protocol': ibp_peer.json.api_url | urlsplit('scheme'), 'hostname': ibp_peer.json.api_url | urlsplit('hostname'), 'port': ibp_peer.json.api_url | urlsplit('port'), 'pem': organization.wallet + '/tls-root.pem' if peer.tls.enabled else '' } }, recursive=True) }}"
+
+- name: Create node JSON file
+  copy:
+    content: "{{ lookup('template', 'ibp/peer-node.json.j2') | to_nice_json }}"
+    dest: "{{ organization.nodes }}/{{ peer.id }}.json"

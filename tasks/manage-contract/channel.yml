@@ -1,0 +1,9 @@
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+---
+- name: Install contract on all members peers in the channel
+  include_tasks: install-contract.yml
+
+- name: Instantiate contract on channel
+  include_tasks: instantiate-contract.yml

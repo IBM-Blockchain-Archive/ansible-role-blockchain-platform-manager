@@ -1,0 +1,9 @@
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+---
+- name: Install and instantiate contract on all channels
+  include_tasks: manage-contract/channel.yml
+  with_items: "{{ contract.channels }}"
+  loop_control:
+      loop_var: channel

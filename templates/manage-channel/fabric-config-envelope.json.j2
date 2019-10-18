@@ -1,0 +1,18 @@
+{# SPDX-License-Identifier: Apache-2.0 #}
+{
+    "payload":{
+        "header":{
+            "channel_header":{
+                "channel_id":"{{ channel.name }}",
+                "type":2
+            }
+        },
+        "data":{
+            {% if config_update.stdout is defined %}
+            "config_update":{{ config_update.stdout }}
+            {% else %}
+            "config_update":{{ config_update }}
+            {% endif %}
+        }
+    }
+}

@@ -1,0 +1,19 @@
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+---
+- name: Load IBM Blockchain Platform service credentials
+  include_vars:
+    file: "{{ lookup('env','IBP_SERVICE_CREDS') }}"
+    name: service_creds
+
+- name: Authenticate to IBM Blockchain Platform service
+  uri:
+    url: "https://iam.cloud.ibm.com/identity/token"
+    method: POST
+    return_content: yes
+    body_format: "form-urlencoded"
+    body:
+      apikey: "{{ service_creds.apikey }}"
+      grant_type: "urn:ibm:params:oauth:grant-type:apikey"
+  register: auth
