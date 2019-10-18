@@ -1,3 +1,7 @@
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+---
 galaxy_info:
   role_name: blockchain_platform_manager
   author: IBM Blockchain Platform
