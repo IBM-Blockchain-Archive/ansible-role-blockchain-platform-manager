@@ -1,0 +1,59 @@
+{# SPDX-License-Identifier: Apache-2.0 #}
+{
+    "name": "{{ organization.msp.id }}",
+    "version": "1.0.0",
+    "wallet": "{{ organization.wallet | basename }}",
+    "client": {
+        "organization": "{{ organization.msp.id }}",
+        "connection": {
+            "timeout": {
+                "peer": {
+                    "endorser": "300"
+                },
+                "orderer": "300"
+            }
+        }
+    },
+    "organizations": {
+        "{{ organization.msp.id }}": {
+            "mspid": "{{ organization.msp.id }}",
+            "peers": [
+                {% for peer in organization.peers %}
+                "{{ peer.id }}"{%- if not loop.last -%},{% endif %}
+                {% endfor %}
+            ],
+            "certificateAuthorities": [
+                "{{ organization.ca.id }}"
+            ]
+        }
+    },
+    "peers": {
+        {% for peer in organization.peers %}
+        "{{ peer.id }}": {
+            {% if peer.tls.enabled %}
+            "tlsCACerts": {
+                "pem": {{ lookup('file', ibp[peer.id].pem) | to_json }}
+            },
+            {% if ibp[peer.id].internal_hostname is defined %}
+            "grpcOptions": {
+                "hostnameOverride": "{{ ibp[peer.id].internal_hostname }}",
+                "ssl-target-name-override": "{{ ibp[peer.id].internal_hostname }}"
+            },
+            {% endif %}
+            {% endif %}
+            "url": "{{ ibp[peer.id].protocol }}://{{ ibp[peer.id].hostname }}:{{ ibp[peer.id].port }}"
+        }{%- if not loop.last -%},{% endif %}
+        {% endfor %}
+    },
+    "certificateAuthorities": {
+        "{{ organization.ca.id }}": {
+            {% if organization.ca.tls.enabled %}
+            "tlsCACerts": {
+                "pem": {{ lookup('file', ibp[organization.ca.id].pem) | to_json }}
+            },
+            {% endif %}
+            "url": "{{ ibp[organization.ca.id].protocol }}://{{ ibp[organization.ca.id].hostname }}:{{ ibp[organization.ca.id].port }}",
+            "caName": "{{ ibp[organization.ca.id].caname }}"
+        }
+    }
+}
