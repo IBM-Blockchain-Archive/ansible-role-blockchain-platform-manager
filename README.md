@@ -1,7 +1,13 @@
 ansible-role-blockchain-platform-manager
 =========
 
+[![Build Status](https://dev.azure.com/IBM-Blockchain/ansible-role-blockchain-platform-manager/_apis/build/status/IBM-Blockchain.ansible-role-blockchain-platform-manager?branchName=master)](https://dev.azure.com/IBM-Blockchain/ansible-role-blockchain-platform-manager/_build/latest?definitionId=1&branchName=master)
+
 Ansible role for managing blockchain networks using the IBM Blockchain Platform.
+
+You can install this role from [Ansible Galaxy](https://galaxy.ansible.com/ibm/blockchain_platform_manager):
+
+`ansible-galaxy install ibm.blockchain_platform_manager`
 
 Requirements
 ------------
