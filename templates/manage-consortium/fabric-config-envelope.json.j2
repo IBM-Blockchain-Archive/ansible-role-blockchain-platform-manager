@@ -8,7 +8,7 @@
             }
         },
         "data":{
-            "config_update":{{ config_update.stdout }}
+            "config_update":{{ lookup('file', tempdir.path + "/config_update.json") }}
         }
     }
 }

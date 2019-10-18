@@ -3,8 +3,9 @@
 #
 ---
 - name: Create channel configuration update
-  set_fact:
-    config_update: "{{ lookup('template', 'manage-channel/fabric-channel-config-update.json.j2') }}"
+  copy:
+    content: "{{ lookup('template', 'manage-channel/fabric-channel-config-update.json.j2') }}"
+    dest: "{{ tempdir.path }}/config_update.json"
 
 - name: Create channel configuration update envelope
   copy:
