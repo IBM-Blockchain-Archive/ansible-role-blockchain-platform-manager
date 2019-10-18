@@ -1,0 +1,13 @@
+# 
+# SPDX-License-Identifier: Apache-2.0
+#
+---
+trigger:
+- master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- script: pip install ansible ansible-lint docker
+  displayName: Install Python dependencies
