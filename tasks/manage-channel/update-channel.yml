@@ -50,8 +50,7 @@
   failed_when: False
 
 - name: Decode channel configuration update
-  command: configtxlator proto_decode --type=common.ConfigUpdate --input={{ tempdir.path }}/config_update.pb
-  register: config_update
+  command: configtxlator proto_decode --type=common.ConfigUpdate --input={{ tempdir.path }}/config_update.pb --output={{ tempdir.path }}/config_update.json
   when: compute_update.rc == 0
 
 - name: Create channel configuration update envelope
