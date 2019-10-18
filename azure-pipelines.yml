@@ -1,13 +1,26 @@
-# 
+#
 # SPDX-License-Identifier: Apache-2.0
 #
 ---
 trigger:
-- master
+  - master
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: "ubuntu-latest"
 
 steps:
-- script: pip install ansible ansible-lint docker
-  displayName: Install Python dependencies
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: "3.x"
+    displayName: Use Python 3.x
+  - script: |
+      set -e
+      pip install ansible ansible-lint docker
+    displayName: Install Python dependencies
+  - script: ansible-lint . || true
+    displayName: Lint
+  - script: |
+      ansible-galaxy login --github-token=$(GitHub Token)
+      ansible-galaxy import IBM-Blockchain ansible-role-blockchain-platform-manager
+    condition: ne(variables['Build.Reason'], 'PullRequest')
+    displayName: Publish to Ansible Galaxy
