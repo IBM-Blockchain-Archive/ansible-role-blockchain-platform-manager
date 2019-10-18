@@ -1,0 +1,25 @@
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+---
+- name: Check for MSP
+  uri:
+    url: "{{ infrastructure.saas.api_endpoint }}/ak/api/v1/components/{{ organization.msp.id }}"
+    method: HEAD
+    return_content: yes
+    status_code:
+    - "200"
+    - "404"
+    headers:
+      Authorization: "Bearer {{ ibp.saas.access_token }}"
+  register: ibp_msp
+
+- name: Create MSP
+  uri:
+    url: "{{ infrastructure.saas.api_endpoint }}/ak/api/v1/components/msp"
+    method: POST
+    headers:
+      Authorization: "Bearer {{ ibp.saas.access_token }}"
+    body_format: json
+    body: "{{ lookup('template', 'saas/create-msp.json.j2') }}"
+  when: ibp_msp.status == 404
