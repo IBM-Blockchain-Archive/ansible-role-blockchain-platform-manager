@@ -74,19 +74,6 @@
           Enable: false
     dest: "{{ organization.wallet }}/{{ orderer.identity }}/config.yaml"
 
-- name: Create orderer genesis block configuration file
-  copy:
-      content: "{{ lookup('template', 'docker/configtx.yaml.j2') }}"
-      dest: "{{ tempdir.path }}/configtx.yaml"
-
-- name: Create orderer genesis block
-  shell: >
-    configtxgen
-    -configPath {{ tempdir.path }}
-    -profile Solo
-    -channelID testchainid
-    -outputBlock {{ tempdir.path }}/genesis.block
-
 - name: Create orderer MSP volume
   docker_volume:
     name: "{{ orderer.docker.name }}-msp"
@@ -101,40 +88,6 @@
   docker_volume:
     name: "{{ orderer.docker.name }}-data"
     state: present
-
-- name: Create temporary orderer container
-  docker_container:
-    name: "{{ orderer.docker.name }}-temp"
-    image: hyperledger/fabric-orderer
-    volumes:
-      - "{{ orderer.docker.name }}-msp:/etc/hyperledger/fabric/msp"
-      - "{{ orderer.docker.name }}-tls:/etc/hyperledger/fabric/tls"
-      - "{{ orderer.docker.name }}-data:/var/hyperledger/production"
-    state: stopped
-
-- name: Copy the orderer user enrollment into the orderer container
-  shell: >
-    docker cp
-    {{ organization.wallet }}/{{ orderer.identity }}/.
-    {{ orderer.docker.name }}-temp:/etc/hyperledger/fabric/msp/
-
-- name: Copy the orderer TLS user enrollment into the orderer container
-  shell: >
-    docker cp
-    {{ organization.wallet }}/{{ orderer.tls.identity }}/.
-    {{ orderer.docker.name }}-temp:/etc/hyperledger/fabric/tls/
-  when: orderer.tls.enabled
-
-- name: Copy the orderer genesis block into the orderer container
-  shell: >
-    docker cp
-    {{ tempdir.path }}/genesis.block
-    {{ orderer.docker.name }}-temp:/var/hyperledger/production/
-
-- name: Delete temporary orderer container
-  docker_container:
-    name: "{{ orderer.docker.name }}-temp"
-    state: absent
 
 - name: Start orderer container
   docker_container:
@@ -158,7 +111,73 @@
       - "{{ orderer.docker.name }}-tls:/etc/hyperledger/fabric/tls"
       - "{{ orderer.docker.name }}-data:/var/hyperledger/production"
     state: started
+
+- name: Compare the orderer user enrollment with orderer container
+  shell: >
+    tar cf - -C {{ organization.wallet }}/{{ orderer.identity }} . |
+    docker exec -i {{ orderer.docker.name }} sh -c "cat >/tmp/msp.tar && rm -rf /tmp/msp && mkdir /tmp/msp && cd /tmp/msp && tar xf /tmp/msp.tar && find . -type f -exec sha256sum {} \; > /tmp/msp.sums && cd /etc/hyperledger/fabric/msp && sha256sum -c /tmp/msp.sums"
+  register: check_orderer_msp
+  failed_when: False
+  changed_when: False
+
+- name: Copy the orderer user enrollment into orderer container
+  shell: >
+    docker cp
+    {{ organization.wallet }}/{{ orderer.identity }}/.
+    {{ orderer.docker.name }}:/etc/hyperledger/fabric/msp/
+  when: check_orderer_msp.rc != 0
+
+- name: Compare the orderer TLS user enrollment with orderer container
+  shell: >
+    tar cf - -C {{ organization.wallet }}/{{ orderer.tls.identity }} . |
+    docker exec -i {{ orderer.docker.name }} sh -c "cat >/tmp/tls.tar && rm -rf /tmp/tls && mkdir /tmp/tls && cd /tmp/tls && tar xf /tmp/tls.tar && find . -type f -exec sha256sum {} \; > /tmp/tls.sums && cd /etc/hyperledger/fabric/tls && sha256sum -c /tmp/tls.sums"
+  register: check_orderer_tls
+  failed_when: False
+  changed_when: False
+  when: orderer.tls.enabled
+
+- name: Copy the orderer TLS user enrollment into orderer container
+  shell: >
+    docker cp
+    {{ organization.wallet }}/{{ orderer.tls.identity }}/.
+    {{ orderer.docker.name }}:/etc/hyperledger/fabric/tls/
+  when: orderer.tls.enabled and check_orderer_tls.rc != 0
+
+- name: Test for orderer genesis block in orderer container
+  shell: >
+    docker exec {{ orderer.docker.name }} test -d /var/hyperledger/production/orderer/chains/testchainid
+  register: check_orderer_genesis_block
+  failed_when: False
+  changed_when: False
+
+- name: Create orderer genesis block configuration file
+  copy:
+    content: "{{ lookup('template', 'docker/configtx.yaml.j2') }}"
+    dest: "{{ tempdir.path }}/configtx.yaml"
+  when: check_orderer_genesis_block.rc != 0
+
+- name: Create orderer genesis block
+  shell: >
+    configtxgen
+    -configPath {{ tempdir.path }}
+    -profile Solo
+    -channelID testchainid
+    -outputBlock {{ tempdir.path }}/genesis.block
+  when: check_orderer_genesis_block.rc != 0
+
+- name: Copy the orderer genesis block into orderer container
+  shell: >
+    docker cp
+    {{ tempdir.path }}/genesis.block
+    {{ orderer.docker.name }}:/var/hyperledger/production/
+  when: check_orderer_genesis_block.rc != 0
+
+- name: Restart orderer container
+  docker_container:
+    name: "{{ orderer.docker.name }}"
+    state: started
     restart: yes
+  when: check_orderer_msp.rc != 0 or check_orderer_tls.rc != 0 or check_orderer_genesis_block.rc != 0
 
 - name: Update orderer facts
   set_fact:
