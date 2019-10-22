@@ -24,6 +24,7 @@
       CORE_PEER_TLS_ROOTCERT_FILE: "{{ ibp[peer.id].pem if ibp[peer.id].pem is defined }}"
   register: chaincode_list
   failed_when: False
+  changed_when: False
 
 - name: Determine if channel has contract instantiated at correct version
   set_fact:
