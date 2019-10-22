@@ -16,6 +16,7 @@
     {% if protocol == "https" %}--tls.certfiles {{ organization.wallet }}/ca-tls-root.pem{% endif %}
   register: identity_list
   failed_when: False
+  changed_when: False
 
 - name: Register the user
   shell: >

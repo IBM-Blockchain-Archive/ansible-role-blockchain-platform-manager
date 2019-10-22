@@ -17,6 +17,7 @@
      CORE_PEER_LOCALMSPID: "{{ channel.members[0].msp.id }}"
   register: channel_fetch
   failed_when: False
+  changed_when: False
 
 - name: Determine if channel exists
   set_fact:

@@ -14,6 +14,7 @@
   environment:
      CORE_PEER_MSPCONFIGPATH: "{{ channel.members[0].wallet }}/{{ channel.members[0].msp.admin.identity }}"
      CORE_PEER_LOCALMSPID: "{{ channel.members[0].msp.id }}"
+  changed_when: False
 
 - name: Join all members to channel
   include_tasks: join-channel-member.yml
