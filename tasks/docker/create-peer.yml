@@ -136,9 +136,16 @@
       CORE_CHAINCODE_NODE_RUNTIME: hyperledger/fabric-baseimage:0.4.15
       CORE_LEDGER_STATE_STATEDATABASE: "{{ 'CouchDB' if peer.database_type is defined and peer.database_type == 'couchdb' else 'goleveldb' }}"
       CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS: "{{ peer.docker.couchdb.name + ':5984' if peer.database_type is defined and peer.database_type == 'couchdb' else '' }}"
+      CORE_OPERATIONS_LISTENADDRESS: 0.0.0.0:{{ peer.docker.operations_port }}
+      CORE_OPERATIONS_TLS_ENABLED: "{{ 'true' if peer.tls.enabled else 'false' }}"
+      CORE_OPERATIONS_TLS_CERT_FILE: /etc/hyperledger/fabric/tls/server.crt
+      CORE_OPERATIONS_TLS_KEY_FILE: /etc/hyperledger/fabric/tls/server.key
+      CORE_OPERATIONS_TLS_CLIENTROOTCAS_FILES: /etc/hyperledger/fabric/tls/ca.crt
+      CORE_METRICS_PROVIDER: prometheus
     published_ports:
       - "{{ peer.docker.port }}:{{ peer.docker.port }}"
       - "{{ peer.docker.chaincode_port }}:{{ peer.docker.chaincode_port }}"
+      - "{{ peer.docker.operations_port }}:{{ peer.docker.operations_port }}"
     volumes:
       - "{{ peer.docker.name }}-msp:/etc/hyperledger/fabric/msp"
       - "{{ peer.docker.name }}-tls:/etc/hyperledger/fabric/tls"
@@ -183,6 +190,16 @@
     state: started
     restart: yes
   when: check_peer_msp.rc != 0 or check_peer_tls.rc != 0
+
+- name: Wait for peer to start
+  uri:
+    url: "{{ 'https' if peer.tls.enabled else 'http' }}://localhost:{{ peer.docker.operations_port }}/healthz"
+    status_code: "200"
+    validate_certs: no
+  register: result
+  until: result.status == 200
+  retries: 60
+  delay: 1
 
 - name: Update peer facts
   set_fact:

@@ -98,7 +98,7 @@ Example Playbook
             # The name to use for this Docker container and associated Docker volumes.
             name: ca.org1.example.com
             # The external port to use for this Docker container.
-            port: 17054
+            port: 18050
           # IBM Blockchain Platform on IBM Cloud specific configuration.
           ibp:
             # The display name of this CA.
@@ -133,15 +133,17 @@ Example Playbook
               # The name to use for this Docker container and associated Docker volumes.
               name: peer0.org1.example.com
               # The external request port to use for this Docker container.
-              port: 17051
+              port: 18051
               # The external chaincode port to use for this Docker container.
-              chaincode_port: 17052
+              chaincode_port: 18052
+              # The external operations port to use for this Docker container.
+              operations_port: 18053
               # CouchDB specific configuration.
               couchdb:
                 # The name to use for the CouchDB Docker container and associated Docker volumes.
                 name: couchdb0.org1.example.com
                 # The external CouchDB port to use for the CouchDB Docker container.
-                port: 5984
+                port: 18054
             # IBM Blockchain Platform on IBM Cloud specific configuration.
             ibp:
               # The display name of this peer.
@@ -182,7 +184,7 @@ Example Playbook
             # The name to use for this Docker container and associated Docker volumes.
             name: ca.orderer.example.com
             # The external port to use for this Docker container.
-            port: 19054
+            port: 17050
           # IBM Blockchain Platform on IBM Cloud specific configuration.
           ibp:
             # The display name of this CA.
@@ -216,7 +218,9 @@ Example Playbook
             # The name to use for this Docker container and associated Docker volumes.
             name: orderer.example.com
             # The external port to use for this Docker container.
-            port: 17050
+            port: 17051
+            # The external operations port to use for this Docker container.
+            operations_port: 17052
           # IBM Blockchain Platform on IBM Cloud specific configuration.
           ibp:
             # The display name of this orderer.
