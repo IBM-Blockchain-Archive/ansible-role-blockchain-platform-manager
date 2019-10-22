@@ -104,8 +104,15 @@
       ORDERER_GENERAL_LOCALMSPID: "{{ organization.msp.id }}"
       ORDERER_GENERAL_SYSTEMCHANNEL: testchainid
       ORDERER_GENERAL_TLS_ENABLED: "{{ 'true' if orderer.tls.enabled else 'false' }}"
+      ORDERER_OPERATIONS_LISTENADDRESS: 0.0.0.0:{{ orderer.docker.operations_port }}
+      ORDERER_OPERATIONS_TLS_ENABLED: "{{ 'true' if orderer.tls.enabled else 'false' }}"
+      ORDERER_OPERATIONS_TLS_CERTIFICATE: /etc/hyperledger/fabric/tls/server.crt
+      ORDERER_OPERATIONS_TLS_PRIVATEKEY: /etc/hyperledger/fabric/tls/server.key
+      ORDERER_OPERATIONS_TLS_CLIENTROOTCAS: /etc/hyperledger/fabric/tls/ca.crt
+      ORDERER_METRICS_PROVIDER: prometheus
     published_ports:
       - "{{ orderer.docker.port }}:{{ orderer.docker.port }}"
+      - "{{ orderer.docker.operations_port }}:{{ orderer.docker.operations_port }}"
     volumes:
       - "{{ orderer.docker.name }}-msp:/etc/hyperledger/fabric/msp"
       - "{{ orderer.docker.name }}-tls:/etc/hyperledger/fabric/tls"
@@ -178,6 +185,16 @@
     state: started
     restart: yes
   when: check_orderer_msp.rc != 0 or check_orderer_tls.rc != 0 or check_orderer_genesis_block.rc != 0
+
+- name: Wait for orderer to start
+  uri:
+    url: "{{ 'https' if orderer.tls.enabled else 'http' }}://localhost:{{ orderer.docker.operations_port }}/healthz"
+    status_code: "200"
+    validate_certs: no
+  register: result
+  until: result.status == 200
+  retries: 60
+  delay: 1
 
 - name: Update orderer facts
   set_fact:
