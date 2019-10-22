@@ -90,33 +90,6 @@
     state: present
   when: peer.database_type is defined and peer.database_type == "couchdb"
 
-- name: Create temporary peer container
-  docker_container:
-    name: "{{ peer.docker.name }}-temp"
-    image: hyperledger/fabric-peer
-    volumes:
-      - "{{ peer.docker.name }}-msp:/etc/hyperledger/fabric/msp"
-      - "{{ peer.docker.name }}-tls:/etc/hyperledger/fabric/tls"
-    state: stopped
-
-- name: Copy the peer user enrollment into the peer container
-  shell: >
-    docker cp
-    {{ organization.wallet }}/{{ peer.identity }}/.
-    {{ peer.docker.name }}-temp:/etc/hyperledger/fabric/msp/
-
-- name: Copy the peer TLS user enrollment into the peer container
-  shell: >
-    docker cp
-    {{ organization.wallet }}/{{ peer.tls.identity }}/.
-    {{ peer.docker.name }}-temp:/etc/hyperledger/fabric/tls/
-  when: peer.tls.enabled
-
-- name: Delete temporary peer container
-  docker_container:
-    name: "{{ peer.docker.name }}-temp"
-    state: absent
-
 - name: Start CouchDB container
   docker_container:
     name: "{{ peer.docker.couchdb.name }}"
@@ -172,7 +145,44 @@
       - "{{ peer.docker.name }}-data:/var/hyperledger/production"
       - /var/run/docker.sock:/var/run/docker.sock
     state: started
+
+- name: Compare the peer user enrollment with peer container
+  shell: >
+    tar cf - -C {{ organization.wallet }}/{{ peer.identity }} . |
+    docker exec -i {{ peer.docker.name }} sh -c "cat >/tmp/msp.tar && rm -rf /tmp/msp && mkdir /tmp/msp && cd /tmp/msp && tar xf /tmp/msp.tar && find . -type f -exec sha256sum {} \; > /tmp/msp.sums && cd /etc/hyperledger/fabric/msp && sha256sum -c /tmp/msp.sums"
+  register: check_peer_msp
+  failed_when: False
+  changed_when: False
+
+- name: Copy the peer user enrollment into peer container
+  shell: >
+    docker cp
+    {{ organization.wallet }}/{{ peer.identity }}/.
+    {{ peer.docker.name }}:/etc/hyperledger/fabric/msp/
+  when: check_peer_msp.rc != 0
+
+- name: Compare the peer TLS user enrollment with peer container
+  shell: >
+    tar cf - -C {{ organization.wallet }}/{{ peer.tls.identity }} . |
+    docker exec -i {{ peer.docker.name }} sh -c "cat >/tmp/tls.tar && rm -rf /tmp/tls && mkdir /tmp/tls && cd /tmp/tls && tar xf /tmp/tls.tar && find . -type f -exec sha256sum {} \; > /tmp/tls.sums && cd /etc/hyperledger/fabric/tls && sha256sum -c /tmp/tls.sums"
+  register: check_peer_tls
+  failed_when: False
+  changed_when: False
+  when: peer.tls.enabled
+
+- name: Copy the peer TLS user enrollment into peer container
+  shell: >
+    docker cp
+    {{ organization.wallet }}/{{ peer.tls.identity }}/.
+    {{ peer.docker.name }}:/etc/hyperledger/fabric/tls/
+  when: peer.tls.enabled and check_peer_tls.rc != 0
+
+- name: Restart peer container
+  docker_container:
+    name: "{{ peer.docker.name }}"
+    state: started
     restart: yes
+  when: check_peer_msp.rc != 0 or check_peer_tls.rc != 0
 
 - name: Update peer facts
   set_fact:
