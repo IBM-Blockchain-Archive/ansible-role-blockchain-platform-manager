@@ -10,6 +10,7 @@
   tempfile:
       state: directory
   register: tempdir
+  changed_when: false
 
 - name: Initialize infrastructure
   include_tasks: "{{ infrastructure.type }}/init.yml"
