@@ -14,10 +14,10 @@ Requirements
 
 This Ansible role requires the following pre-requisites:
 - Python 3.7+
-  - https://www.python.org/
+  - https://www.python.org/downloads/
 - Ansible 2.8+
   - `pip install ansible`
-- Hyperledger Fabric binaries (`configtxgen`, `peer`, `fabric-ca-client`, etc)
+- Hyperledger Fabric v1.4 binaries (`configtxgen`, `peer`, `fabric-ca-client`, etc)
   - https://hyperledger-fabric.readthedocs.io/en/release-1.4/install.html
 - One of the following supported deployment targets:
   - IBM Blockchain Platform on IBM Cloud
@@ -25,7 +25,11 @@ This Ansible role requires the following pre-requisites:
   - Docker 19.03+
 - Docker SDK for Python (if using Docker)
   - `pip install docker`
-- `sponge` (from `moreutils`)
+- `jq`
+  - https://stedolan.github.io/jq/download/
+- `sponge`
+  - `apt-get install moreutils` (Ubuntu)
+  - `brew install moreutils` (macOS)
 
 Role Variables
 --------------
