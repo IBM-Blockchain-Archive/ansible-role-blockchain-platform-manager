@@ -13,12 +13,12 @@ steps:
     inputs:
       versionSpec: "3.x"
     displayName: Use Python 3.x
-  - script: |
-      set -e
-      pip install ansible ansible-lint docker
+  - script: pip install ansible ansible-lint docker
     displayName: Install Python dependencies
   - script: ansible-lint . || true
     displayName: Lint
+  - script: docker/build.sh
+    displayName: Build Docker image
   - script: |
       ansible-galaxy login --github-token=$(GitHub Token)
       ansible-galaxy import IBM-Blockchain ansible-role-blockchain-platform-manager
