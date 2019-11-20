@@ -1,0 +1,27 @@
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+---
+- name: Check for MSP
+  uri:
+    url: "{{ infrastructure.software.api_endpoint }}/ak/api/v1/components/{{ organization.msp.id }}"
+    url_username: "{{ infrastructure.software.api_key }}"
+    url_password: "{{ infrastructure.software.api_secret }}"
+    method: HEAD
+    return_content: yes
+    status_code:
+    - "200"
+    - "404"
+    validate_certs: no
+  register: ibp_msp
+
+- name: Create MSP
+  uri:
+    url: "{{ infrastructure.software.api_endpoint }}/ak/api/v1/components/msp"
+    url_username: "{{ infrastructure.software.api_key }}"
+    url_password: "{{ infrastructure.software.api_secret }}"
+    method: POST
+    body_format: json
+    body: "{{ lookup('template', 'software/create-msp.json.j2') }}"
+    validate_certs: no
+  when: ibp_msp.status == 404

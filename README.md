@@ -54,6 +54,7 @@ Example Playbook
       # Type of target infrastructure. The options are:
       # - "docker" deploy using Docker
       # - "saas" deploy using the IBM Blockchain Platform on IBM Cloud
+      # - "software" deploy using the IBM Blockchain Platform software
       type: docker
       # Docker specific configuration.
       docker:
@@ -63,6 +64,14 @@ Example Playbook
       # In this example, service credentials are loaded from a JSON file.
       # You must supply both "api_endpoint" and "apikey" properties.
       saas: "{{ lookup('file', 'service-creds.json') | from_json }}"
+      # IBM Blockchain Platform software specific configuration.
+      software:
+        # The API endpoint to use.
+        api_endpoint: https://ibp-console.example.org:32000
+        # The API key to use.
+        api_key: xxxxxxxx
+        # The API secret to use.
+        api_secret: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
     # The list of organizations.
     organizations:
       # The organization Org1.
