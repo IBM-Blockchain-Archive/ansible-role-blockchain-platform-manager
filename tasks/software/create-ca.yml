@@ -1,0 +1,82 @@
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+---
+- name: Check for certificate authority
+  uri:
+    url: "{{ infrastructure.software.api_endpoint }}/ak/api/v1/components/{{ ca.id }}"
+    url_username: "{{ infrastructure.software.api_key }}"
+    url_password: "{{ infrastructure.software.api_secret }}"
+    method: HEAD
+    return_content: yes
+    status_code:
+    - "200"
+    - "404"
+    validate_certs: no
+  register: ibp_ca
+
+- name: Create certificate authority
+  uri:
+    url: "{{ infrastructure.software.api_endpoint }}/ak/api/v1/kubernetes/components/ca"
+    url_username: "{{ infrastructure.software.api_key }}"
+    url_password: "{{ infrastructure.software.api_secret }}"
+    method: POST
+    body_format: json
+    body: "{{ lookup('template', 'software/create-ca.json.j2') }}"
+    validate_certs: no
+  when: ibp_ca.status == 404
+
+- name: Get certificate authority
+  uri:
+    url: "{{ infrastructure.software.api_endpoint }}/ak/api/v1/components/{{ ca.id }}"
+    url_username: "{{ infrastructure.software.api_key }}"
+    url_password: "{{ infrastructure.software.api_secret }}"
+    method: GET
+    return_content: yes
+    validate_certs: no
+  register: ibp_ca
+
+- name: Wait for certificate authority to start
+  uri:
+    url: "{{ ibp_ca.json.api_url }}/cainfo"
+    status_code: "200"
+    validate_certs: no
+  register: result
+  until: result.status == 200
+  retries: 60
+  delay: 1
+
+- name: Copy the CA root certificate
+  copy:
+    content: "{{ result.json.result.CAChain | b64decode }}"
+    dest: "{{ organization.wallet }}/root.pem"
+
+- name: Wait for TLS certificate authority to start
+  uri:
+    url: "{{ ibp_ca.json.api_url }}/cainfo?ca={{ ibp_ca.json.tlsca_name }}"
+    status_code: "200"
+    validate_certs: no
+  register: result
+  until: result.status == 200
+  retries: 60
+  delay: 1
+
+- name: Copy the TLS CA root certificate (for all components)
+  copy:
+    content: "{{ result.json.result.CAChain | b64decode }}"
+    dest: "{{ organization.wallet }}/tls-root.pem"
+
+- name: Copy the TLS CA root certificate (for the certificate authority component)
+  copy:
+    content: "{{ ibp_ca.json.tls_cert | b64decode }}"
+    dest: "{{ organization.wallet }}/ca-tls-root.pem"
+  when: ca.tls.enabled
+
+- name: Update certificate authority facts
+  set_fact:
+    ibp: "{{ ibp | combine({ ca.id: { 'protocol': ibp_ca.json.api_url | urlsplit('scheme'), 'hostname': ibp_ca.json.api_url | urlsplit('hostname'), 'port': ibp_ca.json.api_url | urlsplit('port'), 'pem': organization.wallet + '/tls-root.pem' if ca.tls.enabled else '', 'caname': ibp_ca.json.ca_name, 'tlscaname': ibp_ca.json.tlsca_name } }, recursive=True) }}"
+
+- name: Create node JSON file
+  copy:
+    content: "{{ lookup('template', 'software/ca-node.json.j2') | to_nice_json }}"
+    dest: "{{ organization.nodes }}/{{ ca.id }}.json"
