@@ -92,7 +92,7 @@
 - name: Start orderer container
   docker_container:
     name: "{{ orderer.docker.name }}"
-    image: hyperledger/fabric-orderer:1.4.3
+    image: hyperledger/fabric-orderer:1.4.4
     networks:
       - name: "{{ infrastructure.docker.network }}"
     networks_cli_compatible: yes

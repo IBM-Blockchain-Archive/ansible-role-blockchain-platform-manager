@@ -11,9 +11,9 @@ RUN wget -qO docker-19.03.2.tgz https://download.docker.com/linux/static/stable/
     chmod +x /usr/local/bin/docker-compose
 RUN mkdir /lib64 && \
     ln -s /lib/libc.musl-x86_64.so.1 /lib64/ld-linux-x86-64.so.2 && \
-    wget -qO fabric-bins.tar.gz https://nexus.hyperledger.org/content/repositories/releases/org/hyperledger/fabric/hyperledger-fabric/linux-amd64-1.4.3/hyperledger-fabric-linux-amd64-1.4.3.tar.gz && \
+    wget -qO fabric-bins.tar.gz https://github.com/hyperledger/fabric/releases/download/v1.4.4/hyperledger-fabric-linux-amd64-1.4.4.tar.gz && \
     tar xvf fabric-bins.tar.gz -C /usr/local && \
-    wget -qO fabric-ca-bins.tar.gz https://nexus.hyperledger.org/content/repositories/releases/org/hyperledger/fabric-ca/hyperledger-fabric-ca/linux-amd64-1.4.3/hyperledger-fabric-ca-linux-amd64-1.4.3.tar.gz && \
+    wget -qO fabric-ca-bins.tar.gz https://github.com/hyperledger/fabric-ca/releases/download/v1.4.4/hyperledger-fabric-ca-linux-amd64-1.4.4.tar.gz && \
     tar xvf fabric-ca-bins.tar.gz -C /usr/local && \
     rm fabric-bins.tar.gz fabric-ca-bins.tar.gz
 ENV FABRIC_CFG_PATH=/usr/local/config
