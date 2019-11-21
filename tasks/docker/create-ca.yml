@@ -15,7 +15,7 @@
 - name: Create certificate authority container
   docker_container:
     name: "{{ ca.docker.name }}"
-    image: hyperledger/fabric-ca:1.4.3
+    image: hyperledger/fabric-ca:1.4.4
     networks:
       - name: "{{ infrastructure.docker.network }}"
     networks_cli_compatible: yes
