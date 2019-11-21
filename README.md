@@ -94,7 +94,7 @@ Example Playbook
         # CA configuration for this organization.
         ca: &Org1CA
           # The unique ID of this CA.
-          id: "Org1CA"
+          id: "org1ca"
           # The default admin identity and secret to set for this CA.
           admin_identity: "admin"
           admin_secret: "adminpw"
@@ -117,7 +117,7 @@ Example Playbook
           # First peer for this organization.
           - &Org1Peer1
             # The unique ID of this peer.
-            id: "Org1Peer1"
+            id: "org1peer1"
             # The identity and secret to register and enroll for this peer.
             # This user will be registered on the CA specified for this organization,
             # and will be used as the peers identity.
@@ -180,7 +180,7 @@ Example Playbook
         # CA configuration for this organization.
         ca: &OrdererCA
           # The unique ID of this CA.
-          id: "OrdererCA"
+          id: "ordererca"
           # The default admin identity and secret to set for this CA.
           admin_identity: "admin"
           admin_secret: "adminpw"
@@ -201,7 +201,7 @@ Example Playbook
         # Orderer configuration for this organization.
         orderer: &Orderer
           # The unique ID of this orderer.
-          id: "Orderer1"
+          id: "orderer1"
           # The identity and secret to register and enroll for this orderer.
           # This user will be registered on the CA specified for this organization,
           # and will be used as the orderers identity.
