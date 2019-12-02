@@ -37,7 +37,7 @@
 - name: Instantiate contract on channel
   command: >
     peer chaincode instantiate
-    -C {{channel.name}}
+    -C {{ channel.name }}
     -c '{"Args":[]}'
     -n {{ contract.name }}
     -v {{ contract.version }}
@@ -57,7 +57,7 @@
 - name: Upgrade contract on channel
   command: >
     peer chaincode upgrade
-    -C {{channel.name}}
+    -C {{ channel.name }}
     -c '{"Args":[]}'
     -n {{ contract.name }}
     -v {{ contract.version }}
