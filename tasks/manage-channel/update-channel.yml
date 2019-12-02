@@ -23,6 +23,7 @@
 
 - name: Extract channel configuration from block
   shell: >
+    set -o pipefail &&
     jq
     .data.data[0].payload.data.config
     {{ tempdir.path }}/config_block.json |
@@ -32,6 +33,7 @@
 
 - name: Add/update channel members in channel configuration
   shell: >
+    set -o pipefail &&
     jq
     --argjson msp '{{ lookup('template', 'manage-channel/fabric-msp.json.j2') | to_json }}'
     '.channel_group.groups.Application.groups.{{ member.msp.id }} = $msp'
@@ -44,6 +46,7 @@
 
 - name: Add/update anchor peers in channel configuration
   shell: >
+    set -o pipefail &&
     jq
     --argjson anchorPeers '{{ lookup('template', 'manage-channel/fabric-anchor-peers.json.j2') | to_json }}'
     '.channel_group.groups.Application.groups.{{ member.msp.id }}.values.AnchorPeers = $anchorPeers'
@@ -57,6 +60,7 @@
 
 - name: Add/update channel policies in channel configuration
   shell: >
+    set -o pipefail &&
     jq
     --argjson policies '{{ lookup('template', 'manage-channel/fabric-policies.json.j2') | to_json }}'
     '.channel_group.groups.Application.policies = $policies'

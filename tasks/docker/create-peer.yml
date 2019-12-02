@@ -157,6 +157,7 @@
 
 - name: Compare the peer user enrollment with peer container
   shell: >
+    set -o pipefail &&
     tar cf - -C {{ organization.wallet }}/{{ peer.identity }} . |
     docker exec -i {{ peer.docker.name }} sh -c "
       cat >/tmp/msp.tar &&
@@ -180,6 +181,7 @@
 
 - name: Compare the peer TLS user enrollment with peer container
   shell: >
+    set -o pipefail &&
     tar cf - -C {{ organization.wallet }}/{{ peer.tls.identity }} . |
     docker exec -i {{ peer.docker.name }} sh -c "
       cat >/tmp/tls.tar &&

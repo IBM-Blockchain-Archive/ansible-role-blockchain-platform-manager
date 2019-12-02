@@ -121,6 +121,7 @@
 
 - name: Compare the orderer user enrollment with orderer container
   shell: >
+    set -o pipefail &&
     tar cf - -C {{ organization.wallet }}/{{ orderer.identity }} . |
     docker exec -i {{ orderer.docker.name }} sh -c "
       cat >/tmp/msp.tar &&
@@ -144,6 +145,7 @@
 
 - name: Compare the orderer TLS user enrollment with orderer container
   shell: >
+    set -o pipefail &&
     tar cf - -C {{ organization.wallet }}/{{ orderer.tls.identity }} . |
     docker exec -i {{ orderer.docker.name }} sh -c "
       cat >/tmp/tls.tar &&
