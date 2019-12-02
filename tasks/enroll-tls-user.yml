@@ -20,13 +20,13 @@
     --caname {{ caname }}
     -M {{ identity_directory }}-temp
     {% if protocol == "https" %}--tls.certfiles {{ organization.wallet }}/ca-tls-root.pem{% endif %}
-  when: identity_directory_stats.stat.exists == False
+  when: not identity_directory_stats.stat.exists
 
 - name: Create the TLS directory
   file:
     path: "{{ identity_directory }}"
     state: directory
-  when: identity_directory_stats.stat.exists == False
+  when: not identity_directory_stats.stat.exists
 
 - name: Copy the TLS CA root certificate
   copy:
@@ -34,7 +34,7 @@
     dest: "{{ identity_directory }}/ca.crt"
   with_fileglob:
     - "{{ identity_directory }}-temp/tlscacerts/*.pem"
-  when: identity_directory_stats.stat.exists == False
+  when: not identity_directory_stats.stat.exists
 
 - name: Copy the TLS certificate
   copy:
@@ -42,7 +42,7 @@
     dest: "{{ identity_directory }}/server.crt"
   with_fileglob:
     - "{{ identity_directory }}-temp/signcerts/*.pem"
-  when: identity_directory_stats.stat.exists == False
+  when: not identity_directory_stats.stat.exists
 
 - name: Copy the TLS private key
   copy:
@@ -50,10 +50,10 @@
     dest: "{{ identity_directory }}/server.key"
   with_fileglob:
     - "{{ identity_directory }}-temp/keystore/*_sk"
-  when: identity_directory_stats.stat.exists == False
+  when: not identity_directory_stats.stat.exists
 
 - name: Delete the temporary TLS directory
   file:
     path: "{{ identity_directory }}-temp"
     state: absent
-  when: identity_directory_stats.stat.exists == False
+  when: not identity_directory_stats.stat.exists
