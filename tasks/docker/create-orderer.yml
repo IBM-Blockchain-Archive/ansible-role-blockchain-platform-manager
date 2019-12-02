@@ -128,7 +128,7 @@
   changed_when: False
 
 - name: Copy the orderer user enrollment into orderer container
-  shell: >
+  command: >
     docker cp
     {{ organization.wallet }}/{{ orderer.identity }}/.
     {{ orderer.docker.name }}:/etc/hyperledger/fabric/msp/
@@ -144,14 +144,14 @@
   when: orderer.tls.enabled
 
 - name: Copy the orderer TLS user enrollment into orderer container
-  shell: >
+  command: >
     docker cp
     {{ organization.wallet }}/{{ orderer.tls.identity }}/.
     {{ orderer.docker.name }}:/etc/hyperledger/fabric/tls/
   when: orderer.tls.enabled and check_orderer_tls.rc != 0
 
 - name: Test for orderer genesis block in orderer container
-  shell: >
+  command: >
     docker exec {{ orderer.docker.name }} test -d /var/hyperledger/production/orderer/chains/testchainid
   register: check_orderer_genesis_block
   failed_when: False
@@ -164,7 +164,7 @@
   when: check_orderer_genesis_block.rc != 0
 
 - name: Create orderer genesis block
-  shell: >
+  command: >
     configtxgen
     -configPath {{ tempdir.path }}
     -profile Solo
@@ -173,7 +173,7 @@
   when: check_orderer_genesis_block.rc != 0
 
 - name: Copy the orderer genesis block into orderer container
-  shell: >
+  command: >
     docker cp
     {{ tempdir.path }}/genesis.block
     {{ orderer.docker.name }}:/var/hyperledger/production/
