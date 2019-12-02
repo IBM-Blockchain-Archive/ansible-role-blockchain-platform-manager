@@ -100,4 +100,3 @@
      CORE_PEER_MSPCONFIGPATH: "{{ organization.wallet }}/{{ organization.msp.admin.identity }}"
      CORE_PEER_LOCALMSPID: "{{ organization.msp.id }}"
   when: compute_update.rc == 0
-
