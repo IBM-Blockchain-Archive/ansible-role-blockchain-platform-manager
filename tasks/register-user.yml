@@ -7,7 +7,7 @@
     registrar_directory: "{{ organization.wallet + '/' + caname + '/' + registrar if caname != ibp[organization.ca.id].caname else organization.wallet + '/' + registrar }}"
 
 - name: Check to see if the user has been registered
-  shell: >
+  command: >
     fabric-ca-client identity list
     -u {{ protocol }}://{{ hostname }}:{{ port }}
     --caname {{ caname }}
@@ -19,7 +19,7 @@
   changed_when: False
 
 - name: Register the user
-  shell: >
+  command: >
     fabric-ca-client register
     -u {{ protocol }}://{{ hostname }}:{{ port }}
     --caname {{ caname }}

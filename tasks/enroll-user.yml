@@ -12,7 +12,7 @@
   register: identity_directory_stats
 
 - name: Enroll the user
-  shell: >
+  command: >
     fabric-ca-client enroll
     -u {{ protocol }}://{{ identity }}:{{ secret }}@{{ hostname }}:{{ port }}
     --caname {{ caname }}

@@ -162,7 +162,7 @@
   changed_when: False
 
 - name: Copy the peer user enrollment into peer container
-  shell: >
+  command: >
     docker cp
     {{ organization.wallet }}/{{ peer.identity }}/.
     {{ peer.docker.name }}:/etc/hyperledger/fabric/msp/
@@ -178,7 +178,7 @@
   when: peer.tls.enabled
 
 - name: Copy the peer TLS user enrollment into peer container
-  shell: >
+  command: >
     docker cp
     {{ organization.wallet }}/{{ peer.tls.identity }}/.
     {{ peer.docker.name }}:/etc/hyperledger/fabric/tls/

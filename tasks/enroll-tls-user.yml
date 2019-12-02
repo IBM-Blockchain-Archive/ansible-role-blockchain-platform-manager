@@ -12,7 +12,7 @@
   register: identity_directory_stats
 
 - name: Enroll the TLS user
-  shell: >
+  command: >
     fabric-ca-client enroll
     --enrollment.profile tls
     --csr.hosts {{ hostnames }}
