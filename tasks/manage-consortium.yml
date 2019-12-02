@@ -21,11 +21,21 @@
   changed_when: False
 
 - name: Extract system channel configuration from block
-  shell: jq .data.data[0].payload.data.config {{ tempdir.path }}/config_block.json | tee {{ tempdir.path }}/config.json | tee {{ tempdir.path }}/updated_config.json
+  shell: >
+    jq
+    .data.data[0].payload.data.config
+    {{ tempdir.path }}/config_block.json |
+    tee {{ tempdir.path }}/config.json |
+    tee {{ tempdir.path }}/updated_config.json
   changed_when: False
 
 - name: Add/update consortium members in system channel configuration
-  shell: jq --argjson msp '{{ lookup('template', 'manage-consortium/fabric-msp.json.j2') | to_json }}' '.channel_group.groups.Consortiums.groups.SampleConsortium.groups.{{ member.msp.id }} = $msp' {{ tempdir.path }}/updated_config.json | sponge {{ tempdir.path }}/updated_config.json
+  shell: >
+    jq
+    --argjson msp '{{ lookup('template', 'manage-consortium/fabric-msp.json.j2') | to_json }}'
+    '.channel_group.groups.Consortiums.groups.SampleConsortium.groups.{{ member.msp.id }} = $msp'
+    {{ tempdir.path }}/updated_config.json |
+    sponge {{ tempdir.path }}/updated_config.json
   loop: "{{ orderer.consortium.members }}"
   loop_control:
     loop_var: member
@@ -40,7 +50,12 @@
   changed_when: False
 
 - name: Compute system channel configuration update
-  command: configtxlator compute_update --channel_id=testchainid --original={{ tempdir.path }}/config.pb --updated={{ tempdir.path }}/updated_config.pb --output={{ tempdir.path }}/config_update.pb
+  command: >
+    configtxlator compute_update
+    --channel_id=testchainid
+    --original={{ tempdir.path }}/config.pb
+    --updated={{ tempdir.path }}/updated_config.pb
+    --output={{ tempdir.path }}/config_update.pb
   register: compute_update
   failed_when: False
   changed_when: False
@@ -56,7 +71,11 @@
   when: compute_update.rc == 0
 
 - name: Encode system channel configuration update envelope
-  command: configtxlator proto_encode --type=common.Envelope --input={{ tempdir.path }}/config_update_as_envelope.json --output={{ tempdir.path }}/config_update_as_envelope.pb
+  command: >
+    configtxlator proto_encode
+    --type=common.Envelope
+    --input={{ tempdir.path }}/config_update_as_envelope.json
+    --output={{ tempdir.path }}/config_update_as_envelope.pb
   when: compute_update.rc == 0
 
 - name: Sign system channel configuration update envelope

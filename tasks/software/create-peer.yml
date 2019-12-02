@@ -73,7 +73,17 @@
 
 - name: Update peer facts
   set_fact:
-    ibp: "{{ ibp | combine({ peer.id: { 'protocol': ibp_peer.json.api_url | urlsplit('scheme'), 'hostname': ibp_peer.json.api_url | urlsplit('hostname'), 'port': ibp_peer.json.api_url | urlsplit('port'), 'pem': organization.wallet + '/tls-root.pem' if peer.tls.enabled else '' } }, recursive=True) }}"
+    ibp: "{{
+      ibp |
+      combine({
+        peer.id: {
+          'protocol': ibp_peer.json.api_url | urlsplit('scheme'),
+          'hostname': ibp_peer.json.api_url | urlsplit('hostname'),
+          'port': ibp_peer.json.api_url | urlsplit('port'),
+          'pem': organization.wallet + '/tls-root.pem' if peer.tls.enabled else ''
+        }
+      }, recursive=True)
+    }}"
 
 - name: Create node JSON file
   copy:

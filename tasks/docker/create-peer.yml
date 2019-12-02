@@ -135,7 +135,9 @@
       CORE_CHAINCODE_JAVA_RUNTIME: hyperledger/fabric-javaenv:1.4.4
       CORE_CHAINCODE_NODE_RUNTIME: hyperledger/fabric-baseimage:0.4.18
       CORE_LEDGER_STATE_STATEDATABASE: "{{ 'CouchDB' if peer.database_type is defined and peer.database_type == 'couchdb' else 'goleveldb' }}"
-      CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS: "{{ peer.docker.couchdb.name + ':5984' if peer.database_type is defined and peer.database_type == 'couchdb' else '' }}"
+      CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS: "{{
+        peer.docker.couchdb.name + ':5984' if peer.database_type is defined and peer.database_type == 'couchdb' else ''
+      }}"
       CORE_OPERATIONS_LISTENADDRESS: 0.0.0.0:{{ peer.docker.operations_port }}
       CORE_OPERATIONS_TLS_ENABLED: "{{ 'true' if peer.tls.enabled else 'false' }}"
       CORE_OPERATIONS_TLS_CERT_FILE: /etc/hyperledger/fabric/tls/server.crt
@@ -156,7 +158,15 @@
 - name: Compare the peer user enrollment with peer container
   shell: >
     tar cf - -C {{ organization.wallet }}/{{ peer.identity }} . |
-    docker exec -i {{ peer.docker.name }} sh -c "cat >/tmp/msp.tar && rm -rf /tmp/msp && mkdir /tmp/msp && cd /tmp/msp && tar xf /tmp/msp.tar && find . -type f -exec sha256sum {} \; > /tmp/msp.sums && cd /etc/hyperledger/fabric/msp && sha256sum -c /tmp/msp.sums"
+    docker exec -i {{ peer.docker.name }} sh -c "
+      cat >/tmp/msp.tar &&
+      rm -rf /tmp/msp &&
+      mkdir /tmp/msp &&
+      cd /tmp/msp &&
+      tar xf /tmp/msp.tar &&
+      find . -type f -exec sha256sum {} \; > /tmp/msp.sums &&
+      cd /etc/hyperledger/fabric/msp &&
+      sha256sum -c /tmp/msp.sums"
   register: check_peer_msp
   failed_when: False
   changed_when: False
@@ -171,7 +181,15 @@
 - name: Compare the peer TLS user enrollment with peer container
   shell: >
     tar cf - -C {{ organization.wallet }}/{{ peer.tls.identity }} . |
-    docker exec -i {{ peer.docker.name }} sh -c "cat >/tmp/tls.tar && rm -rf /tmp/tls && mkdir /tmp/tls && cd /tmp/tls && tar xf /tmp/tls.tar && find . -type f -exec sha256sum {} \; > /tmp/tls.sums && cd /etc/hyperledger/fabric/tls && sha256sum -c /tmp/tls.sums"
+    docker exec -i {{ peer.docker.name }} sh -c "
+      cat >/tmp/tls.tar &&
+      rm -rf /tmp/tls &&
+      mkdir /tmp/tls &&
+      cd /tmp/tls &&
+      tar xf /tmp/tls.tar &&
+      find . -type f -exec sha256sum {} \; > /tmp/tls.sums &&
+      cd /etc/hyperledger/fabric/tls &&
+      sha256sum -c /tmp/tls.sums"
   register: check_peer_tls
   failed_when: False
   changed_when: False
@@ -203,7 +221,19 @@
 
 - name: Update peer facts
   set_fact:
-    ibp: "{{ ibp | combine({ peer.id: { 'protocol': 'grpcs' if peer.tls.enabled else 'grpc', 'hostname': 'localhost', 'internal_hostname': peer.docker.name, 'port': peer.docker.port, 'chaincode_port': peer.docker.chaincode_port, 'pem': organization.wallet + '/tls-root.pem' if peer.tls.enabled else '' } }, recursive=True) }}"
+    ibp: "{{
+      ibp |
+      combine({
+        peer.id: {
+          'protocol': 'grpcs' if peer.tls.enabled else 'grpc',
+          'hostname': 'localhost',
+          'internal_hostname': peer.docker.name,
+          'port': peer.docker.port,
+          'chaincode_port': peer.docker.chaincode_port,
+          'pem': organization.wallet + '/tls-root.pem' if peer.tls.enabled else ''
+        }
+      }, recursive=True)
+    }}"
 
 - name: Create node JSON file
   copy:

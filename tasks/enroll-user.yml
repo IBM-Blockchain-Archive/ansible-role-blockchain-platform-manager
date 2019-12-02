@@ -4,7 +4,14 @@
 ---
 - name: Determine identity directory
   set_fact:
-    identity_directory: "{{ organization.wallet + '/' + caname + '/' + identity if caname != ibp[organization.ca.id].caname else organization.wallet + '/' + identity }}"
+    identity_directory: "{{
+      organization.wallet +
+      '/' + caname +
+      '/' +
+      identity if caname != ibp[organization.ca.id].caname else organization.wallet +
+      '/' +
+      identity
+    }}"
 
 - name: Check to see if the user has been enrolled
   stat:

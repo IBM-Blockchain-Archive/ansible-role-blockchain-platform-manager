@@ -122,7 +122,15 @@
 - name: Compare the orderer user enrollment with orderer container
   shell: >
     tar cf - -C {{ organization.wallet }}/{{ orderer.identity }} . |
-    docker exec -i {{ orderer.docker.name }} sh -c "cat >/tmp/msp.tar && rm -rf /tmp/msp && mkdir /tmp/msp && cd /tmp/msp && tar xf /tmp/msp.tar && find . -type f -exec sha256sum {} \; > /tmp/msp.sums && cd /etc/hyperledger/fabric/msp && sha256sum -c /tmp/msp.sums"
+    docker exec -i {{ orderer.docker.name }} sh -c "
+      cat >/tmp/msp.tar &&
+      rm -rf /tmp/msp &&
+      mkdir /tmp/msp &&
+      cd /tmp/msp &&
+      tar xf /tmp/msp.tar &&
+      find . -type f -exec sha256sum {} \; > /tmp/msp.sums &&
+      cd /etc/hyperledger/fabric/msp &&
+      sha256sum -c /tmp/msp.sums"
   register: check_orderer_msp
   failed_when: False
   changed_when: False
@@ -137,7 +145,15 @@
 - name: Compare the orderer TLS user enrollment with orderer container
   shell: >
     tar cf - -C {{ organization.wallet }}/{{ orderer.tls.identity }} . |
-    docker exec -i {{ orderer.docker.name }} sh -c "cat >/tmp/tls.tar && rm -rf /tmp/tls && mkdir /tmp/tls && cd /tmp/tls && tar xf /tmp/tls.tar && find . -type f -exec sha256sum {} \; > /tmp/tls.sums && cd /etc/hyperledger/fabric/tls && sha256sum -c /tmp/tls.sums"
+    docker exec -i {{ orderer.docker.name }} sh -c "
+      cat >/tmp/tls.tar &&
+      rm -rf /tmp/tls &&
+      mkdir /tmp/tls &&
+      cd /tmp/tls &&
+      tar xf /tmp/tls.tar &&
+      find . -type f -exec sha256sum {} \; > /tmp/tls.sums &&
+      cd /etc/hyperledger/fabric/tls &&
+      sha256sum -c /tmp/tls.sums"
   register: check_orderer_tls
   failed_when: False
   changed_when: False
@@ -198,7 +214,18 @@
 
 - name: Update orderer facts
   set_fact:
-    ibp: "{{ ibp | combine({ orderer.id: { 'protocol': 'grpcs' if orderer.tls.enabled else 'grpc', 'hostname': 'localhost', 'internal_hostname': orderer.docker.name, 'port': orderer.docker.port, 'pem': organization.wallet + '/tls-root.pem' if orderer.tls.enabled else '' } }, recursive=True) }}"
+    ibp: "{{
+      ibp |
+      combine({
+        orderer.id: {
+          'protocol': 'grpcs' if orderer.tls.enabled else 'grpc',
+          'hostname': 'localhost',
+          'internal_hostname': orderer.docker.name,
+          'port': orderer.docker.port,
+          'pem': organization.wallet + '/tls-root.pem' if orderer.tls.enabled else ''
+        }
+      }, recursive=True)
+    }}"
 
 - name: Create node JSON file
   copy:

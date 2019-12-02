@@ -13,7 +13,11 @@
     dest: "{{ tempdir.path }}/config_update_as_envelope.json"
 
 - name: Encode channel configuration update envelope
-  command: configtxlator proto_encode --type=common.Envelope --input={{ tempdir.path }}/config_update_as_envelope.json --output={{ tempdir.path }}/config_update_as_envelope.pb
+  command: >
+    configtxlator proto_encode
+    --type=common.Envelope
+    --input={{ tempdir.path }}/config_update_as_envelope.json
+    --output={{ tempdir.path }}/config_update_as_envelope.pb
   changed_when: True
 
 - name: Sign channel configuration update envelope

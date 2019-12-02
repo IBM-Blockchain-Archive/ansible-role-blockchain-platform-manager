@@ -74,7 +74,18 @@
 
 - name: Update certificate authority facts
   set_fact:
-    ibp: "{{ ibp | combine({ ca.id: { 'protocol': ibp_ca.json.api_url | urlsplit('scheme'), 'hostname': ibp_ca.json.api_url | urlsplit('hostname'), 'port': ibp_ca.json.api_url | urlsplit('port'), 'pem': organization.wallet + '/tls-root.pem' if ca.tls.enabled else '', 'caname': ibp_ca.json.ca_name, 'tlscaname': ibp_ca.json.tlsca_name } }, recursive=True) }}"
+    ibp: "{{
+      ibp |
+      combine({
+        ca.id: {
+          'protocol': ibp_ca.json.api_url | urlsplit('scheme'),
+          'hostname': ibp_ca.json.api_url | urlsplit('hostname'),
+          'port': ibp_ca.json.api_url | urlsplit('port'),
+          'pem': organization.wallet + '/tls-root.pem' if ca.tls.enabled else '',
+          'caname': ibp_ca.json.ca_name, 'tlscaname': ibp_ca.json.tlsca_name
+        }
+      }, recursive=True)
+    }}"
 
 - name: Create node JSON file
   copy:
