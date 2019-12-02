@@ -9,6 +9,8 @@ You can install this role from [Ansible Galaxy](https://galaxy.ansible.com/ibm/b
 
 `ansible-galaxy install ibm.blockchain_platform_manager`
 
+You can find example playbooks on GitHub in the [ansible-examples](https://github.com/IBM-Blockchain/ansible-examples) repository. A good starting point for building your own networks is the [two-org-network](https://github.com/IBM-Blockchain/ansible-examples/tree/master/two-org-network) example.
+
 Requirements
 ------------
 
