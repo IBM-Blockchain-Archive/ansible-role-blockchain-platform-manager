@@ -38,7 +38,13 @@
 
 - name: Check for orderer
   set_fact:
-    ibp_orderer_count: "{{ ibp_components.json | selectattr('cluster_name', 'defined') | selectattr('cluster_name', 'eq', orderer.ibp.cluster_name) | list | length }}"
+    ibp_orderer_count: "{{
+      ibp_components.json |
+      selectattr('cluster_name', 'defined') |
+      selectattr('cluster_name', 'eq', orderer.ibp.cluster_name) |
+      list |
+      length
+    }}"
 
 - name: Create orderer
   uri:
@@ -75,7 +81,17 @@
 
 - name: Update orderer facts
   set_fact:
-    ibp: "{{ ibp | combine({ orderer.id: { 'protocol': ibp_orderer.api_url | urlsplit('scheme'), 'hostname': ibp_orderer.api_url | urlsplit('hostname'), 'port': ibp_orderer.api_url | urlsplit('port'), 'pem': organization.wallet + '/tls-root.pem' if orderer.tls.enabled else '' } }, recursive=True) }}"
+    ibp: "{{
+      ibp |
+      combine({
+        orderer.id: {
+          'protocol': ibp_orderer.api_url | urlsplit('scheme'),
+          'hostname': ibp_orderer.api_url | urlsplit('hostname'),
+          'port': ibp_orderer.api_url | urlsplit('port'),
+          'pem': organization.wallet + '/tls-root.pem' if orderer.tls.enabled else ''
+        }
+      }, recursive=True)
+    }}"
 
 - name: Create node JSON file
   copy:

@@ -59,7 +59,18 @@
 
 - name: Update certificate authority facts
   set_fact:
-    ibp: "{{ ibp | combine({ ca.id: { 'protocol': 'https' if ca.tls.enabled else 'http', 'hostname': 'localhost', 'internal_hostname': ca.docker.name, 'port': ca.docker.port, 'pem': organization.wallet + '/tls-root.pem' if ca.tls.enabled else '', 'caname': 'ca', 'tlscaname': 'ca' } }, recursive=True) }}"
+    ibp: "{{
+      ibp |
+      combine({
+        ca.id: {
+          'protocol': 'https' if ca.tls.enabled else 'http',
+          'hostname': 'localhost', 'internal_hostname': ca.docker.name,
+          'port': ca.docker.port, 'pem': organization.wallet + '/tls-root.pem' if ca.tls.enabled else '',
+          'caname': 'ca',
+          'tlscaname': 'ca'
+        }
+      }, recursive=True)
+    }}"
 
 - name: Create node JSON file
   copy:

@@ -4,7 +4,15 @@
 ---
 - name: Determine registrar directory
   set_fact:
-    registrar_directory: "{{ organization.wallet + '/' + caname + '/' + registrar if caname != ibp[organization.ca.id].caname else organization.wallet + '/' + registrar }}"
+    registrar_directory: "{{
+      organization.wallet +
+      '/' +
+      caname +
+      '/' +
+      registrar if caname != ibp[organization.ca.id].caname else organization.wallet +
+      '/' +
+      registrar
+    }}"
 
 - name: Check to see if the user has been registered
   command: >
