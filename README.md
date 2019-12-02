@@ -3,13 +3,15 @@ ansible-role-blockchain-platform-manager
 
 [![Build Status](https://dev.azure.com/IBM-Blockchain/ansible-role-blockchain-platform-manager/_apis/build/status/IBM-Blockchain.ansible-role-blockchain-platform-manager?branchName=master)](https://dev.azure.com/IBM-Blockchain/ansible-role-blockchain-platform-manager/_build/latest?definitionId=1&branchName=master)
 
-Ansible role for managing blockchain networks using the IBM Blockchain Platform.
+The IBM Blockchain Platform provides advanced tooling that allows you to quickly build, operate & govern and grow blockchain networks. It uses Hyperledger Fabric, the open source, industry standard for enterprise blockchain. It also helps you to deploy Hyperledger Fabric networks anywhere, either to cloud or on-premises, using Kubernetes.
+
+This Ansible role, provided as part of the IBM Blockchain Platform, enables you to automate the building of Hyperledger Fabric networks.
 
 You can install this role from [Ansible Galaxy](https://galaxy.ansible.com/ibm/blockchain_platform_manager):
 
 `ansible-galaxy install ibm.blockchain_platform_manager`
 
-You can find example playbooks on GitHub in the [ansible-examples](https://github.com/IBM-Blockchain/ansible-examples) repository. A good starting point for building your own networks is the [two-org-network](https://github.com/IBM-Blockchain/ansible-examples/tree/master/two-org-network) example.
+You can find example playbooks on GitHub in the [ansible-examples](https://github.com/IBM-Blockchain/ansible-examples) repository. A good starting point for building your own Hyperledger Fabric networks is the [two-org-network](https://github.com/IBM-Blockchain/ansible-examples/tree/master/two-org-network) example.
 
 Requirements
 ------------
