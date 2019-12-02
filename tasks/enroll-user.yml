@@ -18,7 +18,7 @@
     --caname {{ caname }}
     -M {{ identity_directory }}
     {% if protocol == "https" %}--tls.certfiles {{ organization.wallet }}/ca-tls-root.pem{% endif %}
-  when: identity_directory_stats.stat.exists == False
+  when: not identity_directory_stats.stat.exists
 
 - name: Load user certificate
   set_fact:
