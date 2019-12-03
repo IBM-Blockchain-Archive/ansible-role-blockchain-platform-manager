@@ -132,6 +132,8 @@
       find . -type f -exec sha256sum {} \; > /tmp/msp.sums &&
       cd /etc/hyperledger/fabric/msp &&
       sha256sum -c /tmp/msp.sums"
+  args:
+    executable: /bin/bash
   register: check_orderer_msp
   failed_when: False
   changed_when: False
@@ -156,6 +158,8 @@
       find . -type f -exec sha256sum {} \; > /tmp/tls.sums &&
       cd /etc/hyperledger/fabric/tls &&
       sha256sum -c /tmp/tls.sums"
+  args:
+    executable: /bin/bash
   register: check_orderer_tls
   failed_when: False
   changed_when: False

@@ -28,6 +28,8 @@
     {{ tempdir.path }}/config_block.json |
     tee {{ tempdir.path }}/config.json |
     tee {{ tempdir.path }}/updated_config.json
+  args:
+    executable: /bin/bash
   changed_when: False
 
 - name: Add/update consortium members in system channel configuration
@@ -38,6 +40,8 @@
     '.channel_group.groups.Consortiums.groups.SampleConsortium.groups.{{ member.msp.id }} = $msp'
     {{ tempdir.path }}/updated_config.json |
     sponge {{ tempdir.path }}/updated_config.json
+  args:
+    executable: /bin/bash
   loop: "{{ orderer.consortium.members }}"
   loop_control:
     loop_var: member

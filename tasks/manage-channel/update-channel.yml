@@ -29,6 +29,8 @@
     {{ tempdir.path }}/config_block.json |
     tee {{ tempdir.path }}/config.json |
     tee {{ tempdir.path }}/updated_config.json
+  args:
+    executable: /bin/bash
   changed_when: False
 
 - name: Add/update channel members in channel configuration
@@ -39,6 +41,8 @@
     '.channel_group.groups.Application.groups.{{ member.msp.id }} = $msp'
     {{ tempdir.path }}/updated_config.json |
     sponge {{ tempdir.path }}/updated_config.json
+  args:
+    executable: /bin/bash
   loop: "{{ channel.members }}"
   loop_control:
       loop_var: member
@@ -52,6 +56,8 @@
     '.channel_group.groups.Application.groups.{{ member.msp.id }}.values.AnchorPeers = $anchorPeers'
     {{ tempdir.path }}/updated_config.json |
     sponge {{ tempdir.path }}/updated_config.json
+  args:
+    executable: /bin/bash
   when: member.anchor_peers is defined
   loop: "{{ channel.members }}"
   loop_control:
@@ -66,6 +72,8 @@
     '.channel_group.groups.Application.policies = $policies'
     {{ tempdir.path }}/updated_config.json |
     sponge {{ tempdir.path }}/updated_config.json
+  args:
+    executable: /bin/bash
   changed_when: False
 
 - name: Encode current channel configuration
