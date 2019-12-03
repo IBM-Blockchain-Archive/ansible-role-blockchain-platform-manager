@@ -53,6 +53,11 @@ Example Playbook
 - name: Deploy blockchain infrastructure and smart contracts
   hosts: localhost
   vars:
+    # Desired state of all components (certificate authorities, peers,
+    # and orderers). The default value is "present".
+    # - "present" all components have been created, and are running
+    # - "absent" all components have been stopped, and are removed
+    state: present
     # Configuration for the target infrastructure.
     infrastructure:
       # Type of target infrastructure. The options are:

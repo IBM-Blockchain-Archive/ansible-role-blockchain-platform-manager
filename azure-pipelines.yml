@@ -46,8 +46,11 @@ steps:
       mkdir -p ~/.ansible/roles
       ln -s $(Build.Repository.LocalPath) ~/.ansible/roles/ibm.blockchain_platform_manager
     displayName: Link Playbook dependencies
-  - script: ansible-playbook tests/test.yml
-    displayName: Run Playbook
+  - script: |
+      set -ex
+      ansible-playbook tests/test.yml
+      ansible-playbook --extra-vars "state=absent" tests/test.yml
+    displayName: Run Playbook tests
   - script: |
       set -ex
       ansible-galaxy login --github-token=$(GitHub Token)

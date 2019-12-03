@@ -20,6 +20,14 @@
   with_items: "{{ organizations }}"
   loop_control:
     loop_var: organization
+  when: state == 'present'
+
+- name: Delete all organisations
+  include_tasks: delete-organisation.yml
+  with_items: "{{ organizations }}"
+  loop_control:
+    loop_var: organization
+  when: state == 'absent'
 
 - name: Manage all consortiums
   include_tasks: manage-consortium.yml
@@ -28,16 +36,18 @@
     loop_var: organization
   vars:
     orderer: "{{ organization.orderer }}"
-  when: organization.orderer is defined
+  when: state == 'present' and organization.orderer is defined
 
 - name: Manage all channels
   include_tasks: manage-channel.yml
   with_items: "{{ channels }}"
   loop_control:
     loop_var: channel
+  when: state == 'present'
 
 - name: Manage all contracts
   include_tasks: manage-contract.yml
   with_items: "{{ contracts }}"
   loop_control:
     loop_var: contract
+  when: state == 'present'
