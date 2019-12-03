@@ -43,6 +43,10 @@ galaxy_info:
   #   - 1.0
   #   - 7
   #   - 99.99
+  platforms:
+  - name: GenericLinux
+    versions:
+    - all
 
   galaxy_tags: []
     # List tags for your role here, one per line. A tag is a keyword that describes
