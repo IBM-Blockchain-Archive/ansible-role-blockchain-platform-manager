@@ -36,7 +36,7 @@ steps:
     displayName: Download Fabric CA CLI
   - script: |
       set -ex
-      ansible-lint . || true
+      ansible-lint .
       yamllint .
     displayName: Lint
   - script: docker/build.sh
