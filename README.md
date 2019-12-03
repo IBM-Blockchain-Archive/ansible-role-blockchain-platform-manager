@@ -25,7 +25,7 @@ This Ansible role requires the following pre-requisites:
   - https://hyperledger-fabric.readthedocs.io/en/release-1.4/install.html
 - One of the following supported deployment targets:
   - IBM Blockchain Platform on IBM Cloud
-  - IBM Blockchain Platform on Red Hat OpenShift (coming soon!)
+  - IBM Blockchain Platform on Red Hat OpenShift
   - Docker 19.03+
 - Docker SDK for Python (if using Docker)
   - `pip install docker`
