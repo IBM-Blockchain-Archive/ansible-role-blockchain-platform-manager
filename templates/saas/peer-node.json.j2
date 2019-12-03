@@ -2,7 +2,7 @@
 {
     "short_name": "{{ peer.id }}",
     "name": "{{ peer.ibp.display_name }}",
-    "api_url": "{{ ibp[peer.id].protocol }}://{{ ibp[peer.id].hostname }}:{{ ibp[peer.id].port }}"
+    "api_url": "{{ ibp[peer.id].protocol }}://{{ ibp[peer.id].hostname }}:{{ ibp[peer.id].port }}",
     {% if ibp[peer.id].protocol == 'grpcs' %}
     "pem": "{{ lookup('file', ibp[peer.id].pem) | b64encode }}",
     {% endif %}
