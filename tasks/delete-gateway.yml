@@ -1,0 +1,8 @@
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+---
+- name: Delete gateway JSON file
+  file:
+    path: "{{ organization.wallet }}/gateway.json"
+    state: absent
