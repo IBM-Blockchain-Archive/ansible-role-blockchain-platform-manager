@@ -169,7 +169,9 @@ Example Playbook
         # The directory to store generated JSON files for each CA, peer, and orderer in this organization.
         nodes: "{{ playbook_dir }}/nodes/Org1"
         # The directory to store all identities (certificate and private key pairs) for this organization.
-        wallet: "{{ playbook_dir }}/wallet/Org1"
+        wallet: "{{ playbook_dir }}/wallets/Org1"
+        # The directory to store all gateways for this organization.
+        gateways: "{{ playbook_dir }}/gateways/Org1"
       # The organization that manages the ordering service.
       - &OrdererOrg
         # MSP configuration for this organization.
@@ -248,7 +250,9 @@ Example Playbook
         # The directory to store generated JSON files for each CA, peer, and orderer in this organization.
         nodes: "{{ playbook_dir }}/nodes/Orderer"
         # The directory to store all identities (certificate and private key pairs) for this organization.
-        wallet: "{{ playbook_dir }}/wallet/Orderer"
+        wallet: "{{ playbook_dir }}/wallets/Orderer"
+        # The directory to store all gateways for this organization.
+        gateways: "{{ playbook_dir }}/gateways/Orderer"
     # The list of channels.
     channels:
       # The channel channel1.

@@ -12,6 +12,11 @@
     path: "{{ organization.wallet }}"
     state: directory
 
+- name: Create gateways directory
+  file:
+    path: "{{ organization.gateways }}"
+    state: directory
+
 - name: Create certificate authority
   include_tasks: "{{ infrastructure.type }}/create-ca.yml"
   vars:
