@@ -5,19 +5,10 @@
 - name: Deploy blockchain infrastructure and smart contracts
   hosts: localhost
   vars:
-    #
-    # For information on these configuration options, read the documentation:
-    # https://github.com/IBM-Blockchain/ansible-role-blockchain-platform-manager#example-playbook
-    #
     infrastructure:
       type: docker
       docker:
         network: ibp_network
-    #   saas: "{{ lookup('file', 'service-creds.json') | from_json }}"
-    #   software:
-    #     api_endpoint: https://ibp-console.example.org:32000
-    #     api_key: xxxxxxxx
-    #     api_secret: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
     organizations:
       - &Org1
         msp:
@@ -78,7 +69,8 @@
             ibp:
               display_name: "Org1 Peer2"
         nodes: "{{ playbook_dir }}/nodes/Org1"
-        wallet: "{{ playbook_dir }}/wallet/Org1"
+        wallet: "{{ playbook_dir }}/wallets/Org1"
+        gateways: "{{ playbook_dir }}/gateways/Org1"
       - &Org2
         msp:
           id: "Org2MSP"
@@ -138,7 +130,8 @@
             ibp:
               display_name: "Org2 Peer2"
         nodes: "{{ playbook_dir }}/nodes/Org2"
-        wallet: "{{ playbook_dir }}/wallet/Org2"
+        wallet: "{{ playbook_dir }}/wallets/Org2"
+        gateways: "{{ playbook_dir }}/gateways/Org2"
       - &OrdererOrg
         msp:
           id: "OrdererMSP"
@@ -178,7 +171,8 @@
             display_name: "Orderer1"
             cluster_name: "OrdererCluster"
         nodes: "{{ playbook_dir }}/nodes/Orderer"
-        wallet: "{{ playbook_dir }}/wallet/Orderer"
+        wallet: "{{ playbook_dir }}/wallets/Orderer"
+        gateways: "{{ playbook_dir }}/gateways/Orderer"
     channels:
       - &Channel1
         name: channel1
