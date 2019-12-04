@@ -12,6 +12,11 @@
     path: "{{ organization.wallet }}"
     state: absent
 
+- name: Delete gateways directory
+  file:
+    path: "{{ organization.gateways }}"
+    state: absent
+
 - name: Delete certificate authority
   include_tasks: "{{ infrastructure.type }}/delete-ca.yml"
   vars:
