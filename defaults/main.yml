@@ -3,3 +3,5 @@
 #
 ---
 state: present
+channels: []
+contracts: []
