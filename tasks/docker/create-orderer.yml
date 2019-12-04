@@ -206,7 +206,7 @@
     name: "{{ orderer.docker.name }}"
     state: started
     restart: yes
-  when: check_orderer_msp.rc != 0 or check_orderer_tls.rc != 0 or check_orderer_genesis_block.rc != 0
+  when: check_orderer_msp.rc != 0 or (orderer.tls.enabled and check_orderer_tls.rc != 0) or check_orderer_genesis_block.rc != 0
 
 - name: Wait for orderer to start
   uri:
