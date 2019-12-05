@@ -213,7 +213,7 @@
     name: "{{ peer.docker.name }}"
     state: started
     restart: yes
-  when: check_peer_msp.rc != 0 or check_peer_tls.rc != 0
+  when: check_peer_msp.rc != 0 or (peer.tls.enabled and check_peer_tls.rc != 0)
 
 - name: Wait for peer to start
   uri:
