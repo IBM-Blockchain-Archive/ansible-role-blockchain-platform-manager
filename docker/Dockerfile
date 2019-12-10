@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 FROM alpine:3.10
-RUN apk add --no-cache ansible jq moreutils && \
+RUN apk add --no-cache ansible bash jq moreutils && \
     pip3 install docker
 RUN wget -qO docker-19.03.2.tgz https://download.docker.com/linux/static/stable/x86_64/docker-19.03.2.tgz && \
     tar xzvf docker-19.03.2.tgz --strip 1 -C /usr/local/bin docker/docker && \
