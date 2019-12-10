@@ -11,6 +11,7 @@
   docker_volume:
     name: "{{ ca.docker.name }}"
     state: present
+    labels: "{{ infrastructure.docker.labels | default(omit) }}"
 
 - name: Create certificate authority container
   docker_container:
@@ -29,6 +30,7 @@
     volumes:
       - "{{ ca.docker.name }}:/etc/hyperledger"
     state: started
+    labels: "{{ infrastructure.docker.labels | default(omit) }}"
 
 - name: Wait for certificate authority to start
   uri:

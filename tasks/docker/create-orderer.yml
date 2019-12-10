@@ -78,16 +78,19 @@
   docker_volume:
     name: "{{ orderer.docker.name }}-msp"
     state: present
+    labels: "{{ infrastructure.docker.labels | default(omit) }}"
 
 - name: Create orderer TLS volume
   docker_volume:
     name: "{{ orderer.docker.name }}-tls"
     state: present
+    labels: "{{ infrastructure.docker.labels | default(omit) }}"
 
 - name: Create orderer data volume
   docker_volume:
     name: "{{ orderer.docker.name }}-data"
     state: present
+    labels: "{{ infrastructure.docker.labels | default(omit) }}"
 
 - name: Start orderer container
   docker_container:
@@ -118,6 +121,7 @@
       - "{{ orderer.docker.name }}-tls:/etc/hyperledger/fabric/tls"
       - "{{ orderer.docker.name }}-data:/var/hyperledger/production"
     state: started
+    labels: "{{ infrastructure.docker.labels | default(omit) }}"
 
 - name: Compare the orderer user enrollment with orderer container
   shell: >

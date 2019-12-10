@@ -69,6 +69,9 @@ Example Playbook
       docker:
         # The name of the Docker network to use for all containers.
         network: ibp_network
+        # The Docker object labels to apply to all containers and volumes.
+        labels:
+          org.example.label: example label value
       # IBM Blockchain Platform on IBM Cloud specific configuration.
       # In this example, service credentials are loaded from a JSON file.
       # You must supply both "api_endpoint" and "apikey" properties.

@@ -72,22 +72,26 @@
   docker_volume:
     name: "{{ peer.docker.name }}-msp"
     state: present
+    labels: "{{ infrastructure.docker.labels | default(omit) }}"
 
 - name: Create peer TLS volume
   docker_volume:
     name: "{{ peer.docker.name }}-tls"
     state: present
+    labels: "{{ infrastructure.docker.labels | default(omit) }}"
   when: peer.tls.enabled
 
 - name: Create peer data volume
   docker_volume:
     name: "{{ peer.docker.name }}-msp"
     state: present
+    labels: "{{ infrastructure.docker.labels | default(omit) }}"
 
 - name: Create CouchDB data volume
   docker_volume:
     name: "{{ peer.docker.couchdb.name }}-data"
     state: present
+    labels: "{{ infrastructure.docker.labels | default(omit) }}"
   when: peer.database_type is defined and peer.database_type == "couchdb"
 
 - name: Start CouchDB container
@@ -101,6 +105,8 @@
       - "{{ peer.docker.couchdb.port }}:5984"
     volumes:
       - "{{ peer.docker.couchdb.name }}-data:/opt/couchdb/data"
+    state: started
+    labels: "{{ infrastructure.docker.labels | default(omit) }}"
   when: peer.database_type is defined and peer.database_type == "couchdb"
 
 - name: Wait for CouchDB container to start
@@ -154,6 +160,7 @@
       - "{{ peer.docker.name }}-data:/var/hyperledger/production"
       - /var/run/docker.sock:/var/run/docker.sock
     state: started
+    labels: "{{ infrastructure.docker.labels | default(omit) }}"
 
 - name: Compare the peer user enrollment with peer container
   shell: >
