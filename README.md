@@ -155,6 +155,8 @@ Example Playbook
               name: peer0.org1.example.com
               # The external request port to use for this Docker container.
               port: 18051
+              # The prefix to use for naming all chaincode Docker images and containers.
+              chaincode_name_prefix: my_chaincode_prefix
               # The external chaincode port to use for this Docker container.
               chaincode_port: 18052
               # The external operations port to use for this Docker container.

@@ -129,6 +129,7 @@
     networks_cli_compatible: yes
     env:
       CORE_PEER_ID: "{{ peer.id }}"
+      CORE_PEER_NETWORKID: "{{ peer.docker.chaincode_name_prefix | default(omit) }}"
       CORE_PEER_LOCALMSPID: "{{ organization.msp.id }}"
       CORE_PEER_LISTENADDRESS: 0.0.0.0:{{ peer.docker.port }}
       CORE_PEER_CHAINCODELISTENADDRESS: 0.0.0.0:{{ peer.docker.chaincode_port }}
