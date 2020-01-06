@@ -5,4 +5,4 @@
 - name: Create gateway JSON file
   copy:
     content: "{{ lookup('template', 'gateway.json.j2') | to_nice_json }}"
-    dest: "{{ organization.gateways }}/gateway.json"
+    dest: "{{ gateway.organization.gateways }}/{{ gateway.name }}.json"

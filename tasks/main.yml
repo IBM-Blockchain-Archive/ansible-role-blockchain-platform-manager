@@ -51,3 +51,10 @@
   loop_control:
     loop_var: contract
   when: state == 'present'
+
+- name: Create all gateways
+  include_tasks: create-gateway.yml
+  with_items: "{{ gateways }}"
+  loop_control:
+    loop_var: gateway
+  when: state == 'present'
