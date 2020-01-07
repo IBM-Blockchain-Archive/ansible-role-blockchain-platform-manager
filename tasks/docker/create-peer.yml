@@ -166,7 +166,7 @@
 - name: Compare the peer user enrollment with peer container
   shell: >
     set -o pipefail &&
-    tar cf - -C {{ organization.wallet }}/{{ peer.identity }} . |
+    tar cf - -C "{{ organization.wallet }}/{{ peer.identity }}" . |
     docker exec -i {{ peer.docker.name }} sh -c "
       cat >/tmp/msp.tar &&
       rm -rf /tmp/msp &&
@@ -185,14 +185,14 @@
 - name: Copy the peer user enrollment into peer container
   command: >
     docker cp
-    {{ organization.wallet }}/{{ peer.identity }}/.
+    "{{ organization.wallet }}/{{ peer.identity }}/."
     {{ peer.docker.name }}:/etc/hyperledger/fabric/msp/
   when: check_peer_msp.rc != 0
 
 - name: Compare the peer TLS user enrollment with peer container
   shell: >
     set -o pipefail &&
-    tar cf - -C {{ organization.wallet }}/{{ peer.tls.identity }} . |
+    tar cf - -C "{{ organization.wallet }}/{{ peer.tls.identity }}" . |
     docker exec -i {{ peer.docker.name }} sh -c "
       cat >/tmp/tls.tar &&
       rm -rf /tmp/tls &&
@@ -212,7 +212,7 @@
 - name: Copy the peer TLS user enrollment into peer container
   command: >
     docker cp
-    {{ organization.wallet }}/{{ peer.tls.identity }}/.
+    "{{ organization.wallet }}/{{ peer.tls.identity }}/."
     {{ peer.docker.name }}:/etc/hyperledger/fabric/tls/
   when: peer.tls.enabled and check_peer_tls.rc != 0
 

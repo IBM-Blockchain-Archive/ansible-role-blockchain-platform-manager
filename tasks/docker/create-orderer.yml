@@ -126,7 +126,7 @@
 - name: Compare the orderer user enrollment with orderer container
   shell: >
     set -o pipefail &&
-    tar cf - -C {{ organization.wallet }}/{{ orderer.identity }} . |
+    tar cf - -C "{{ organization.wallet }}/{{ orderer.identity }}" . |
     docker exec -i {{ orderer.docker.name }} sh -c "
       cat >/tmp/msp.tar &&
       rm -rf /tmp/msp &&
@@ -145,14 +145,14 @@
 - name: Copy the orderer user enrollment into orderer container
   command: >
     docker cp
-    {{ organization.wallet }}/{{ orderer.identity }}/.
+    "{{ organization.wallet }}/{{ orderer.identity }}/."
     {{ orderer.docker.name }}:/etc/hyperledger/fabric/msp/
   when: check_orderer_msp.rc != 0
 
 - name: Compare the orderer TLS user enrollment with orderer container
   shell: >
     set -o pipefail &&
-    tar cf - -C {{ organization.wallet }}/{{ orderer.tls.identity }} . |
+    tar cf - -C "{{ organization.wallet }}/{{ orderer.tls.identity }}" . |
     docker exec -i {{ orderer.docker.name }} sh -c "
       cat >/tmp/tls.tar &&
       rm -rf /tmp/tls &&
@@ -172,7 +172,7 @@
 - name: Copy the orderer TLS user enrollment into orderer container
   command: >
     docker cp
-    {{ organization.wallet }}/{{ orderer.tls.identity }}/.
+    "{{ organization.wallet }}/{{ orderer.tls.identity }}/."
     {{ orderer.docker.name }}:/etc/hyperledger/fabric/tls/
   when: orderer.tls.enabled and check_orderer_tls.rc != 0
 
