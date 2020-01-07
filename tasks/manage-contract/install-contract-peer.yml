@@ -19,7 +19,7 @@
     contract_installed: "{{ chaincode_list.stdout | join('') is search('Name: ' ~ contract.name ~ ', Version: ' ~ contract.version ~ ',') }}"
 
 - name: Install contract on peer
-  command: peer chaincode install {{ contract.package }}
+  command: peer chaincode install "{{ contract.package }}"
   environment:
       CORE_PEER_ADDRESS: "{{ ibp[peer.id].hostname }}:{{ ibp[peer.id].port }}"
       CORE_PEER_MSPCONFIGPATH: "{{ member.wallet }}/{{ member.msp.admin.identity }}"

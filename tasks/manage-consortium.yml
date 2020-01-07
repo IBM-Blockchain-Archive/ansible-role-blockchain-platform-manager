@@ -9,7 +9,7 @@
     -o {{ ibp[orderer.id].hostname }}:{{ ibp[orderer.id].port }}
     -c testchainid
     {{ '--tls' if ibp[orderer.id].protocol == 'grpcs' else '' }}
-    {{ '--cafile ' + ibp[orderer.id].pem if ibp[orderer.id].protocol == 'grpcs' else '' }}
+    {{ '--cafile "' + ibp[orderer.id].pem + '"' if ibp[orderer.id].protocol == 'grpcs' else '' }}
     {{ '--ordererTLSHostnameOverride ' + ibp[orderer.id].internal_hostname if ibp[orderer.id].internal_hostname is defined else '' }}
   environment:
      CORE_PEER_MSPCONFIGPATH: "{{ organization.wallet }}/{{ organization.msp.admin.identity }}"
@@ -98,7 +98,7 @@
     -o {{ ibp[orderer.id].hostname }}:{{ ibp[orderer.id].port }}
     -c testchainid
     {{ '--tls' if ibp[orderer.id].protocol == 'grpcs' else '' }}
-    {{ '--cafile ' + ibp[orderer.id].pem if ibp[orderer.id].protocol == 'grpcs' else '' }}
+    {{ '--cafile "' + ibp[orderer.id].pem + '"' if ibp[orderer.id].protocol == 'grpcs' else '' }}
     {{ '--ordererTLSHostnameOverride ' + ibp[orderer.id].internal_hostname if ibp[orderer.id].internal_hostname is defined else '' }}
   environment:
      CORE_PEER_MSPCONFIGPATH: "{{ organization.wallet }}/{{ organization.msp.admin.identity }}"

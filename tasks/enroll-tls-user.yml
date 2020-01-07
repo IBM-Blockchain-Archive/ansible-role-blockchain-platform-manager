@@ -26,8 +26,8 @@
     --csr.hosts {{ hostnames }}
     -u {{ protocol }}://{{ identity }}:{{ secret }}@{{ hostname }}:{{ port }}
     --caname {{ caname }}
-    -M {{ identity_directory }}-temp
-    {% if protocol == "https" %}--tls.certfiles {{ organization.wallet }}/ca-tls-root.pem{% endif %}
+    -M "{{ identity_directory }}-temp"
+    {% if protocol == "https" %}--tls.certfiles "{{ organization.wallet }}/ca-tls-root.pem"{% endif %}
   when: not identity_directory_stats.stat.exists
 
 - name: Create the TLS directory
