@@ -204,5 +204,16 @@
               - <<: *Org2
                 endorsing_peers:
                   - <<: *Org2Peer1
+    gateways:
+      - name: Org1 gateway
+        organization:
+          <<: *Org1
+          gateway_peers:
+            - <<: *Org1Peer1
+      - name: Org2 gateway
+        organization:
+          <<: *Org2
+          gateway_peers:
+            - <<: *Org2Peer1
   roles:
     - ibm.blockchain_platform_manager

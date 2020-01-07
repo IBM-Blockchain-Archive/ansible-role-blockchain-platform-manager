@@ -39,7 +39,3 @@
   vars:
     orderer: "{{ organization.orderer }}"
   when: organization.orderer is defined
-
-- name: Create gateway
-  include_tasks: create-gateway.yml
-  when: organization.peers is defined

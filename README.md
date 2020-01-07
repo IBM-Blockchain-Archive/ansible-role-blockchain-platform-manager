@@ -304,6 +304,18 @@ Example Playbook
                 endorsing_peers:
                   # Reference to the first peer for this organization.
                   - <<: *Org1Peer1
+    # The list of gateways.
+    gateways:
+      # The gateway gateway1.
+      - name: gateway1
+        # The organization that owns the gateway.
+        organization:
+          # Reference to the organization Org1.
+          <<: *Org1
+          # The list of gateway peers for this organization.
+          gateway_peers:
+            # Reference to the first peer for this organization.
+            - *Org1Peer1
   roles:
     - ibm.blockchain_platform_manager
 ```

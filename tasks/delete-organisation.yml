@@ -39,7 +39,3 @@
   vars:
     orderer: "{{ organization.orderer }}"
   when: organization.orderer is defined
-
-- name: Delete gateway
-  include_tasks: delete-gateway.yml
-  when: organization.peers is defined
