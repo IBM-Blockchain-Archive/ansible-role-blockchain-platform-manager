@@ -11,7 +11,7 @@ RUN wget -qO docker-19.03.5.tgz https://download.docker.com/linux/static/stable/
     chmod +x /usr/local/bin/docker-compose
 RUN mkdir /lib64 && \
     ln -s /lib/libc.musl-x86_64.so.1 /lib64/ld-linux-x86-64.so.2 && \
-    wget -qO fabric-bins.tar.gz https://github.com/hyperledger/fabric/releases/download/v1.4.4/hyperledger-fabric-linux-amd64-1.4.4.tar.gz && \
+    wget -qO fabric-bins.tar.gz https://github.com/hyperledger/fabric/releases/download/v2.0.0-beta/hyperledger-fabric-linux-amd64-2.0.0-beta.tar.gz && \
     tar xvf fabric-bins.tar.gz -C /usr/local && \
     wget -qO fabric-ca-bins.tar.gz https://github.com/hyperledger/fabric-ca/releases/download/v1.4.4/hyperledger-fabric-ca-linux-amd64-1.4.4.tar.gz && \
     tar xvf fabric-ca-bins.tar.gz -C /usr/local && \

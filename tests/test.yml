@@ -202,20 +202,20 @@
               - *Org2Peer2
             anchor_peers:
               - *Org2Peer1
-    contracts:
-      - name: fabcar
-        version: 1.0.0
-        package: "{{ playbook_dir }}/fabcar@1.0.0.cds"
-        channels:
-          - <<: *Channel1
-            endorsement_policy: "AND('Org1MSP.member','Org2MSP.member')"
-            endorsing_members:
-              - <<: *Org1
-                endorsing_peers:
-                  - <<: *Org1Peer1
-              - <<: *Org2
-                endorsing_peers:
-                  - <<: *Org2Peer1
+    # contracts:
+    #   - name: fabcar
+    #     version: 1.0.0
+    #     package: "{{ playbook_dir }}/fabcar@1.0.0.cds"
+    #     channels:
+    #       - <<: *Channel1
+    #         endorsement_policy: "AND('Org1MSP.peer','Org2MSP.peer')"
+    #         endorsing_members:
+    #           - <<: *Org1
+    #             endorsing_peers:
+    #               - <<: *Org1Peer1
+    #           - <<: *Org2
+    #             endorsing_peers:
+    #               - <<: *Org2Peer1
     gateways:
       - name: Org1 gateway
         organization:

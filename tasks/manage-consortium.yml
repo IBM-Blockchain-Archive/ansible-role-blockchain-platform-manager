@@ -7,7 +7,7 @@
     peer channel fetch config
     {{ tempdir.path }}/config_block.pb
     -o {{ ibp[orderer.id].hostname }}:{{ ibp[orderer.id].port }}
-    -c testchainid
+    -c system-channel
     {{ '--tls' if ibp[orderer.id].protocol == 'grpcs' else '' }}
     {{ '--cafile "' + ibp[orderer.id].pem + '"' if ibp[orderer.id].protocol == 'grpcs' else '' }}
     {{ '--ordererTLSHostnameOverride ' + ibp[orderer.id].internal_hostname if ibp[orderer.id].internal_hostname is defined else '' }}
@@ -71,7 +71,7 @@
 - name: Compute system channel configuration update
   command: >
     configtxlator compute_update
-    --channel_id=testchainid
+    --channel_id=system-channel
     --original={{ tempdir.path }}/config.pb
     --updated={{ tempdir.path }}/updated_config.pb
     --output={{ tempdir.path }}/config_update.pb
@@ -110,7 +110,7 @@
     peer channel update
     -f {{ tempdir.path }}/config_update_as_envelope.pb
     -o {{ ibp[orderer.id].hostname }}:{{ ibp[orderer.id].port }}
-    -c testchainid
+    -c system-channel
     {{ '--tls' if ibp[orderer.id].protocol == 'grpcs' else '' }}
     {{ '--cafile "' + ibp[orderer.id].pem + '"' if ibp[orderer.id].protocol == 'grpcs' else '' }}
     {{ '--ordererTLSHostnameOverride ' + ibp[orderer.id].internal_hostname if ibp[orderer.id].internal_hostname is defined else '' }}

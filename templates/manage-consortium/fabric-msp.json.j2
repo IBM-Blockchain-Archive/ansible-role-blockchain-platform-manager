@@ -83,6 +83,33 @@
                     }
                 }
             }
+        },
+        "Endorsement": {
+            "mod_policy": "Admins",
+            "policy": {
+                "type": 1,
+                "value": {
+                    "identities": [
+                        {
+                            "principal": {
+                                "msp_identifier": "{{ member.msp.id }}",
+                                "role": "MEMBER"
+                            },
+                            "principal_classification": "ROLE"
+                        }
+                    ],
+                    "rule": {
+                        "n_out_of": {
+                            "n": 1,
+                            "rules": [
+                                {
+                                    "signed_by": 0
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
         }
     },
     "values": {

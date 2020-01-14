@@ -95,7 +95,7 @@
 - name: Start orderer container
   docker_container:
     name: "{{ orderer.docker.name }}"
-    image: hyperledger/fabric-orderer:1.4.4
+    image: hyperledger/fabric-orderer:2.0.0-beta
     networks:
       - name: "{{ infrastructure.docker.network }}"
         aliases:
@@ -103,12 +103,12 @@
     networks_cli_compatible: yes
     hostname: "{{ orderer.docker.hostname | mandatory }}"
     env:
-      ORDERER_GENERAL_GENESISMETHOD: file
-      ORDERER_GENERAL_GENESISFILE: /var/hyperledger/production/genesis.block
+      ORDERER_GENERAL_BOOTSTRAPMETHOD: file
+      ORDERER_GENERAL_BOOTSTRAPFILE: /var/hyperledger/production/genesis.block
       ORDERER_GENERAL_LISTENADDRESS: 0.0.0.0
       ORDERER_GENERAL_LISTENPORT: "{{ orderer.docker.port }}"
       ORDERER_GENERAL_LOCALMSPID: "{{ organization.msp.id }}"
-      ORDERER_GENERAL_SYSTEMCHANNEL: testchainid
+      ORDERER_GENERAL_SYSTEMCHANNEL: system-channel
       ORDERER_GENERAL_TLS_ENABLED: "{{ 'true' if orderer.tls.enabled else 'false' }}"
       ORDERER_OPERATIONS_LISTENADDRESS: 0.0.0.0:{{ orderer.docker.operations_port }}
       ORDERER_OPERATIONS_TLS_ENABLED: "{{ 'true' if orderer.tls.enabled else 'false' }}"
@@ -181,7 +181,7 @@
 
 - name: Test for orderer genesis block in orderer container
   command: >
-    docker exec {{ orderer.docker.name }} test -d /var/hyperledger/production/orderer/chains/testchainid
+    docker exec {{ orderer.docker.name }} test -d /var/hyperledger/production/orderer/chains/system-channel
   register: check_orderer_genesis_block
   failed_when: False
   changed_when: False
@@ -197,7 +197,7 @@
     configtxgen
     -configPath {{ tempdir.path }}
     -profile Solo
-    -channelID testchainid
+    -channelID system-channel
     -outputBlock {{ tempdir.path }}/genesis.block
   when: check_orderer_genesis_block.rc != 0
 
