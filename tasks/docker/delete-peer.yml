@@ -26,7 +26,7 @@
 
 - name: Delete peer data volume
   docker_volume:
-    name: "{{ peer.docker.name }}-msp"
+    name: "{{ peer.docker.name }}-data"
     state: absent
 
 - name: Delete CouchDB data volume
