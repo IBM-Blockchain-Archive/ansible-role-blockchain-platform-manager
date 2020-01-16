@@ -1,13 +1,13 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 #
-FROM alpine:3.10
+FROM alpine:3.11
 RUN apk add --no-cache ansible bash jq moreutils && \
     pip3 install docker
-RUN wget -qO docker-19.03.2.tgz https://download.docker.com/linux/static/stable/x86_64/docker-19.03.2.tgz && \
-    tar xzvf docker-19.03.2.tgz --strip 1 -C /usr/local/bin docker/docker && \
-    rm docker-19.03.2.tgz && \
-    wget -qO /usr/local/bin/docker-compose "https://github.com/docker/compose/releases/download/1.24.1/docker-compose-$(uname -s)-$(uname -m)" && \
+RUN wget -qO docker-19.03.5.tgz https://download.docker.com/linux/static/stable/x86_64/docker-19.03.5.tgz && \
+    tar xzvf docker-19.03.5.tgz --strip 1 -C /usr/local/bin docker/docker && \
+    rm docker-19.03.5.tgz && \
+    wget -qO /usr/local/bin/docker-compose "https://github.com/docker/compose/releases/download/1.25.1/docker-compose-$(uname -s)-$(uname -m)" && \
     chmod +x /usr/local/bin/docker-compose
 RUN mkdir /lib64 && \
     ln -s /lib/libc.musl-x86_64.so.1 /lib64/ld-linux-x86-64.so.2 && \
