@@ -19,17 +19,15 @@ steps:
     displayName: Install Python dependencies
   - script: |
       set -ex
-      mvn dependency:get -DremoteRepositories=https://nexus.hyperledger.org/content/repositories/snapshots -Dartifact=org.hyperledger.fabric:hyperledger-fabric-1.4.4-stable:linux-amd64.1.4.4-stable-SNAPSHOT:tar.gz
-      mvn dependency:copy -Dartifact=org.hyperledger.fabric:hyperledger-fabric-1.4.4-stable:linux-amd64.1.4.4-stable-SNAPSHOT:tar.gz -DoutputDirectory=/tmp
-      cd /usr/local
-      sudo tar xzvf /tmp/hyperledger-fabric-1.4.4-stable-linux-amd64.1.4.4-stable-SNAPSHOT.tar.gz
+      wget -qO fabric-bins.tar.gz https://github.com/hyperledger/fabric/releases/download/v1.4.4/hyperledger-fabric-linux-amd64-1.4.4.tar.gz
+      sudo tar xvf fabric-bins.tar.gz -C /usr/local
+      rm fabric-bins.tar.gz
     displayName: Download Fabric CLI
   - script: |
       set -ex
-      mvn dependency:get -DremoteRepositories=https://nexus.hyperledger.org/content/repositories/snapshots -Dartifact=org.hyperledger.fabric-ca:hyperledger-fabric-ca-1.4.4-stable:linux-amd64.1.4.4-stable-SNAPSHOT:tar.gz
-      mvn dependency:copy -Dartifact=org.hyperledger.fabric-ca:hyperledger-fabric-ca-1.4.4-stable:linux-amd64.1.4.4-stable-SNAPSHOT:tar.gz -DoutputDirectory=/tmp
-      cd /usr/local
-      sudo tar xzvf /tmp/hyperledger-fabric-ca-1.4.4-stable-linux-amd64.1.4.4-stable-SNAPSHOT.tar.gz
+      wget -qO fabric-ca-bins.tar.gz https://github.com/hyperledger/fabric-ca/releases/download/v1.4.4/hyperledger-fabric-ca-linux-amd64-1.4.4.tar.gz
+      sudo tar xvf fabric-ca-bins.tar.gz -C /usr/local
+      rm fabric-ca-bins.tar.gz
     displayName: Download Fabric CA CLI
   - script: |
       set -ex
