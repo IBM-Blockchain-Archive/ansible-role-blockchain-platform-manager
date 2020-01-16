@@ -2,8 +2,8 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 ---
-- name: Install contract on all members peers in the channel
-  include_tasks: install-contract.yml
-
-- name: Instantiate contract on channel
-  include_tasks: instantiate-contract.yml
+- name: Install, approve and commit all definitions
+  include_tasks: manage-contract/definition.yml
+  with_items: "{{ channel.definitions }}"
+  loop_control:
+      loop_var: definition
