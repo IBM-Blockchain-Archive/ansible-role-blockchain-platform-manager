@@ -99,6 +99,7 @@
     networks:
       - name: "{{ infrastructure.docker.network }}"
     networks_cli_compatible: yes
+    hostname: "{{ orderer.docker.hostname | mandatory }}"
     env:
       ORDERER_GENERAL_GENESISMETHOD: file
       ORDERER_GENERAL_GENESISFILE: /var/hyperledger/production/genesis.block
@@ -230,7 +231,7 @@
         orderer.id: {
           'protocol': 'grpcs' if orderer.tls.enabled else 'grpc',
           'hostname': 'localhost',
-          'internal_hostname': orderer.docker.name,
+          'internal_hostname': orderer.docker.hostname,
           'port': orderer.docker.port,
           'pem': organization.wallet + '/tls-root.pem' if orderer.tls.enabled else ''
         }

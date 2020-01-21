@@ -20,6 +20,7 @@
     networks:
       - name: "{{ infrastructure.docker.network }}"
     networks_cli_compatible: yes
+    hostname: "{{ ca.docker.hostname | mandatory }}"
     command: sh -c 'fabric-ca-server start -b {{ ca.admin_identity }}:{{ ca.admin_secret }}'
     env:
       FABRIC_CA_SERVER_CA_NAME: "ca"
@@ -66,8 +67,10 @@
       combine({
         ca.id: {
           'protocol': 'https' if ca.tls.enabled else 'http',
-          'hostname': 'localhost', 'internal_hostname': ca.docker.name,
-          'port': ca.docker.port, 'pem': organization.wallet + '/tls-root.pem' if ca.tls.enabled else '',
+          'hostname': 'localhost',
+          'internal_hostname': ca.docker.hostname,
+          'port': ca.docker.port,
+          'pem': organization.wallet + '/tls-root.pem' if ca.tls.enabled else '',
           'caname': 'ca',
           'tlscaname': 'ca'
         }

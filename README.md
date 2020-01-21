@@ -118,6 +118,8 @@ Example Playbook
           docker:
             # The name to use for this Docker container and associated Docker volumes.
             name: ca.org1.example.com
+            # The hostname to use for this Docker container.
+            hostname: ca.org1.example.com
             # The external port to use for this Docker container.
             port: 18050
           # IBM Blockchain Platform on IBM Cloud specific configuration.
@@ -153,6 +155,8 @@ Example Playbook
             docker:
               # The name to use for this Docker container and associated Docker volumes.
               name: peer0.org1.example.com
+              # The hostname to use for this Docker container.
+              hostname: peer0.org1.example.com
               # The external request port to use for this Docker container.
               port: 18051
               # The prefix to use for naming all chaincode Docker images and containers.
@@ -165,6 +169,8 @@ Example Playbook
               couchdb:
                 # The name to use for the CouchDB Docker container and associated Docker volumes.
                 name: couchdb0.org1.example.com
+                # The hostname to use for the CouchDB Docker container.
+                hostname: couchdb0.org1.example.com
                 # The external CouchDB port to use for the CouchDB Docker container.
                 port: 18054
             # IBM Blockchain Platform on IBM Cloud specific configuration.
@@ -208,6 +214,8 @@ Example Playbook
           docker:
             # The name to use for this Docker container and associated Docker volumes.
             name: ca.orderer.example.com
+            # The hostname to use for this Docker container.
+            hostname: ca.orderer.example.com
             # The external port to use for this Docker container.
             port: 17050
           # IBM Blockchain Platform on IBM Cloud specific configuration.
@@ -242,6 +250,8 @@ Example Playbook
           docker:
             # The name to use for this Docker container and associated Docker volumes.
             name: orderer.example.com
+            # The hostname to use for this Docker container.
+            hostname: orderer.example.com
             # The external port to use for this Docker container.
             port: 17051
             # The external operations port to use for this Docker container.
