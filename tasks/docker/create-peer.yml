@@ -101,6 +101,7 @@
     networks:
       - name: "{{ infrastructure.docker.network }}"
     networks_cli_compatible: yes
+    hostname: "{{ peer.docker.couchdb.hostname | mandatory }}"
     published_ports:
       - "{{ peer.docker.couchdb.port }}:5984"
     volumes:
@@ -127,6 +128,7 @@
     networks:
       - name: "{{ infrastructure.docker.network }}"
     networks_cli_compatible: yes
+    hostname: "{{ peer.docker.hostname | mandatory }}"
     env:
       CORE_PEER_ID: "{{ peer.id }}"
       CORE_PEER_NETWORKID: "{{ peer.docker.chaincode_name_prefix | default(omit) }}"
@@ -143,7 +145,7 @@
       CORE_CHAINCODE_NODE_RUNTIME: hyperledger/fabric-baseimage:0.4.18
       CORE_LEDGER_STATE_STATEDATABASE: "{{ 'CouchDB' if peer.database_type is defined and peer.database_type == 'couchdb' else 'goleveldb' }}"
       CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS: "{{
-        peer.docker.couchdb.name + ':5984' if peer.database_type is defined and peer.database_type == 'couchdb' else ''
+        peer.docker.couchdb.hostname + ':5984' if peer.database_type is defined and peer.database_type == 'couchdb' else ''
       }}"
       CORE_OPERATIONS_LISTENADDRESS: 0.0.0.0:{{ peer.docker.operations_port }}
       CORE_OPERATIONS_TLS_ENABLED: "{{ 'true' if peer.tls.enabled else 'false' }}"
@@ -241,7 +243,7 @@
         peer.id: {
           'protocol': 'grpcs' if peer.tls.enabled else 'grpc',
           'hostname': 'localhost',
-          'internal_hostname': peer.docker.name,
+          'internal_hostname': peer.docker.hostname,
           'port': peer.docker.port,
           'chaincode_port': peer.docker.chaincode_port,
           'pem': organization.wallet + '/tls-root.pem' if peer.tls.enabled else ''
