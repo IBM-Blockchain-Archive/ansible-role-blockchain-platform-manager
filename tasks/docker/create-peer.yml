@@ -53,7 +53,7 @@
     caname: "{{ ibp[organization.ca.id].tlscaname }}"
     identity: "{{ peer.tls.identity }}"
     secret: "{{ peer.tls.secret }}"
-    hostnames: "{{ peer.docker.name }},localhost"
+    hostnames: "{{ peer.docker.hostname }},localhost"
   when: peer.tls.enabled
 
 - name: Add admin user for the MSP to the peer
@@ -100,6 +100,8 @@
     image: couchdb:2.3.1
     networks:
       - name: "{{ infrastructure.docker.network }}"
+        aliases:
+          - "{{ peer.docker.couchdb.hostname | mandatory }}"
     networks_cli_compatible: yes
     hostname: "{{ peer.docker.couchdb.hostname | mandatory }}"
     published_ports:
@@ -127,6 +129,8 @@
     image: hyperledger/fabric-peer:1.4.4
     networks:
       - name: "{{ infrastructure.docker.network }}"
+        aliases:
+          - "{{ peer.docker.hostname | mandatory }}"
     networks_cli_compatible: yes
     hostname: "{{ peer.docker.hostname | mandatory }}"
     env:
@@ -135,8 +139,8 @@
       CORE_PEER_LOCALMSPID: "{{ organization.msp.id }}"
       CORE_PEER_LISTENADDRESS: 0.0.0.0:{{ peer.docker.port }}
       CORE_PEER_CHAINCODELISTENADDRESS: 0.0.0.0:{{ peer.docker.chaincode_port }}
-      CORE_PEER_GOSSIP_BOOTSTRAP: "{{ peer.docker.name }}:{{ peer.docker.port }}"
-      CORE_PEER_GOSSIP_EXTERNALENDPOINT: "{{ peer.docker.name }}:{{ peer.docker.port }}"
+      CORE_PEER_GOSSIP_BOOTSTRAP: "{{ peer.docker.hostname }}:{{ peer.docker.port }}"
+      CORE_PEER_GOSSIP_EXTERNALENDPOINT: "{{ peer.docker.hostname }}:{{ peer.docker.port }}"
       CORE_PEER_TLS_ENABLED: "{{ 'true' if peer.tls.enabled else 'false' }}"
       CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE: "{{ infrastructure.docker.network }}"
       CORE_CHAINCODE_BUILDER: hyperledger/fabric-ccenv:1.4.4

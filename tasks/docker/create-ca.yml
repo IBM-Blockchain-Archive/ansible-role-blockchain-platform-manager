@@ -19,6 +19,8 @@
     image: hyperledger/fabric-ca:1.4.4
     networks:
       - name: "{{ infrastructure.docker.network }}"
+        aliases:
+          - "{{ ca.docker.hostname | mandatory }}"
     networks_cli_compatible: yes
     hostname: "{{ ca.docker.hostname | mandatory }}"
     command: sh -c 'fabric-ca-server start -b {{ ca.admin_identity }}:{{ ca.admin_secret }}'
