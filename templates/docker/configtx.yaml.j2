@@ -237,7 +237,7 @@ Orderer: &OrdererDefaults
     # as TLS validation.  The preferred way to specify orderer addresses is now
     # to include the OrdererEndpoints item in your org definition
     Addresses:
-        - {{ orderer.docker.name }}:{{ orderer.docker.port }}
+        - {{ orderer.docker.hostname }}:{{ orderer.docker.port }}
 
     # Batch Timeout: The amount of time to wait before creating a batch.
     BatchTimeout: 2s
