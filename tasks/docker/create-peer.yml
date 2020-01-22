@@ -83,7 +83,7 @@
 
 - name: Create peer data volume
   docker_volume:
-    name: "{{ peer.docker.name }}-msp"
+    name: "{{ peer.docker.name }}-data"
     state: present
     labels: "{{ infrastructure.docker.labels | default(omit) }}"
 
