@@ -42,6 +42,10 @@ steps:
       ansible-lint .
       yamllint .
     displayName: Lint
+  - script: |
+      set -ex
+      docker pull ibmblockchain/vscode-prereqs:latest || true
+    displayName: Pull Docker image
   - script: docker/build.sh
     displayName: Build Docker image
   - script: |
@@ -60,3 +64,20 @@ steps:
       ansible-galaxy import IBM-Blockchain ansible-role-blockchain-platform-manager
     condition: ne(variables['Build.Reason'], 'PullRequest')
     displayName: Publish to Ansible Galaxy
+  - script: |
+      set -ex
+      docker login -u $(Docker Username) -p $(Docker Password)
+      docker tag ibmblockchain/ansible:latest ibmblockchain/vscode-prereqs:unstable
+      docker push ibmblockchain/vscode-prereqs:unstable
+    condition: ne(variables['Build.Reason'], 'PullRequest')
+    displayName: Push Docker image to Docker Hub (merge build)
+  - script: |
+      set -ex
+      docker login -u $(Docker Username) -p $(Docker Password)
+      VERSION=$(git describe --exact-match --tags $(Build.SourceVersion))
+      docker tag ibmblockchain/ansible:latest ibmblockchain/vscode-prereqs:${VERSION}
+      docker tag ibmblockchain/vscode-prereqs:${VERSION} ibmblockchain/vscode-prereqs:latest
+      docker push ibmblockchain/vscode-prereqs:${VERSION}
+      docker push ibmblockchain/vscode-prereqs:latest
+    condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags'))
+    displayName: Push Docker image to Docker Hub (release build)
