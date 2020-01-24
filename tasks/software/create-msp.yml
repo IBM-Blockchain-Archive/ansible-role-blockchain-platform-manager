@@ -2,18 +2,24 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 ---
-- name: Check for MSP
+- name: Get the list of components
   uri:
-    url: "{{ infrastructure.software.api_endpoint }}/ak/api/v1/components/{{ organization.msp.id }}"
+    url: "{{ infrastructure.software.api_endpoint }}/ak/api/v1/components"
     url_username: "{{ infrastructure.software.api_key }}"
     url_password: "{{ infrastructure.software.api_secret }}"
-    method: HEAD
+    method: GET
     return_content: yes
-    status_code:
-    - "200"
-    - "404"
     validate_certs: no
-  register: ibp_msp
+  register: ibp_components
+
+- name: Check for MSP
+  set_fact:
+    ibp_msp_count: "{{
+      ibp_components.json |
+      selectattr('display_name', 'defined') |
+      selectattr('display_name', 'eq', organization.msp.ibp.display_name) |
+      list
+    }}"
 
 - name: Create MSP
   uri:
@@ -24,4 +30,4 @@
     body_format: json
     body: "{{ lookup('template', 'software/create-msp.json.j2') }}"
     validate_certs: no
-  when: ibp_msp.status == 404
+  when: not ibp_msp_count

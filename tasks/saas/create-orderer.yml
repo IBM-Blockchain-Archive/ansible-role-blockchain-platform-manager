@@ -42,8 +42,7 @@
       ibp_components.json |
       selectattr('cluster_name', 'defined') |
       selectattr('cluster_name', 'eq', orderer.ibp.cluster_name) |
-      list |
-      length
+      list
     }}"
 
 - name: Create orderer
@@ -54,7 +53,7 @@
       Authorization: "Bearer {{ ibp.saas.access_token }}"
     body_format: json
     body: "{{ lookup('template', 'saas/create-orderer.json.j2') }}"
-  when: ibp_orderer_count == "0"
+  when: not ibp_orderer_count
 
 - name: Get the list of components
   uri:
