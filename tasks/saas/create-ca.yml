@@ -2,17 +2,23 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 ---
-- name: Check for certificate authority
+- name: Get the list of components
   uri:
-    url: "{{ infrastructure.saas.api_endpoint }}/ak/api/v1/components/{{ ca.id }}"
-    method: HEAD
+    url: "{{ infrastructure.saas.api_endpoint }}/ak/api/v1/components"
+    method: GET
     return_content: yes
-    status_code:
-    - "200"
-    - "404"
     headers:
       Authorization: "Bearer {{ ibp.saas.access_token }}"
-  register: ibp_ca
+  register: ibp_components
+
+- name: Check for certificate authority
+  set_fact:
+    ibp_ca_count: "{{
+      ibp_components.json |
+      selectattr('display_name', 'defined') |
+      selectattr('display_name', 'eq', ca.ibp.display_name) |
+      list
+    }}"
 
 - name: Create certificate authority
   uri:
@@ -22,20 +28,29 @@
       Authorization: "Bearer {{ ibp.saas.access_token }}"
     body_format: json
     body: "{{ lookup('template', 'saas/create-ca.json.j2') }}"
-  when: ibp_ca.status == 404
+  when: not ibp_ca_count
 
-- name: Get certificate authority
+- name: Get the list of components
   uri:
-    url: "{{ infrastructure.saas.api_endpoint }}/ak/api/v1/components/{{ ca.id }}"
+    url: "{{ infrastructure.saas.api_endpoint }}/ak/api/v1/components"
     method: GET
     return_content: yes
     headers:
       Authorization: "Bearer {{ ibp.saas.access_token }}"
-  register: ibp_ca
+  register: ibp_components
+
+- name: Get certificate authority
+  set_fact:
+    ibp_ca: "{{
+      ibp_components.json |
+      selectattr('display_name', 'defined') |
+      selectattr('display_name', 'eq', ca.ibp.display_name) |
+      first
+    }}"
 
 - name: Wait for certificate authority to start
   uri:
-    url: "{{ ibp_ca.json.api_url }}/cainfo"
+    url: "{{ ibp_ca.api_url }}/cainfo"
     status_code: "200"
     validate_certs: no
   register: result
@@ -50,7 +65,7 @@
 
 - name: Wait for TLS certificate authority to start
   uri:
-    url: "{{ ibp_ca.json.api_url }}/cainfo?ca={{ ibp_ca.json.tlsca_name }}"
+    url: "{{ ibp_ca.api_url }}/cainfo?ca={{ ibp_ca.tlsca_name }}"
     status_code: "200"
     validate_certs: no
   register: result
@@ -65,7 +80,7 @@
 
 - name: Copy the TLS CA root certificate (for the certificate authority component)
   copy:
-    content: "{{ ibp_ca.json.tls_cert | b64decode }}"
+    content: "{{ ibp_ca.tls_cert | b64decode }}"
     dest: "{{ organization.wallet }}/ca-tls-root.pem"
   when: ca.tls.enabled
 
@@ -75,11 +90,11 @@
       ibp |
       combine({
         ca.id: {
-          'protocol': ibp_ca.json.api_url | urlsplit('scheme'),
-          'hostname': ibp_ca.json.api_url | urlsplit('hostname'),
-          'port': ibp_ca.json.api_url | urlsplit('port'),
+          'protocol': ibp_ca.api_url | urlsplit('scheme'),
+          'hostname': ibp_ca.api_url | urlsplit('hostname'),
+          'port': ibp_ca.api_url | urlsplit('port'),
           'pem': organization.wallet + '/tls-root.pem' if ca.tls.enabled else '',
-          'caname': ibp_ca.json.ca_name, 'tlscaname': ibp_ca.json.tlsca_name
+          'caname': ibp_ca.ca_name, 'tlscaname': ibp_ca.tlsca_name
         }
       }, recursive=True)
     }}"

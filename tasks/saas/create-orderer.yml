@@ -67,7 +67,12 @@
 
 - name: Get orderer
   set_fact:
-    ibp_orderer: "{{ ibp_components.json | selectattr('cluster_name', 'defined') | selectattr('cluster_name', 'eq', orderer.ibp.cluster_name) | first }}"
+    ibp_orderer: "{{
+      ibp_components.json |
+      selectattr('cluster_name', 'defined') |
+      selectattr('cluster_name', 'eq', orderer.ibp.cluster_name) |
+      first
+    }}"
 
 - name: Wait for orderer to start
   uri:
