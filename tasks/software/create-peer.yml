@@ -27,18 +27,24 @@
     registrar: "{{ organization.ca.admin_identity }}"
   when: peer.tls.enabled
 
-- name: Check for peer
+- name: Get the list of components
   uri:
-    url: "{{ infrastructure.software.api_endpoint }}/ak/api/v1/components/{{ peer.id }}"
+    url: "{{ infrastructure.software.api_endpoint }}/ak/api/v1/components"
     url_username: "{{ infrastructure.software.api_key }}"
     url_password: "{{ infrastructure.software.api_secret }}"
-    method: HEAD
+    method: GET
     return_content: yes
-    status_code:
-    - "200"
-    - "404"
     validate_certs: no
-  register: ibp_peer
+  register: ibp_components
+
+- name: Check for peer
+  set_fact:
+    ibp_peer_count: "{{
+      ibp_components.json |
+      selectattr('display_name', 'defined') |
+      selectattr('display_name', 'eq', peer.ibp.display_name) |
+      list
+    }}"
 
 - name: Create peer
   uri:
@@ -49,21 +55,30 @@
     body_format: json
     body: "{{ lookup('template', 'software/create-peer.json.j2') }}"
     validate_certs: no
-  when: ibp_peer.status == 404
+  when: not ibp_peer_count
 
-- name: Get peer
+- name: Get the list of components
   uri:
-    url: "{{ infrastructure.software.api_endpoint }}/ak/api/v1/components/{{ peer.id }}"
+    url: "{{ infrastructure.software.api_endpoint }}/ak/api/v1/components"
     url_username: "{{ infrastructure.software.api_key }}"
     url_password: "{{ infrastructure.software.api_secret }}"
     method: GET
     return_content: yes
     validate_certs: no
-  register: ibp_peer
+  register: ibp_components
+
+- name: Get peer
+  set_fact:
+    ibp_peer: "{{
+      ibp_components.json |
+      selectattr('display_name', 'defined') |
+      selectattr('display_name', 'eq', peer.ibp.display_name) |
+      first
+    }}"
 
 - name: Wait for peer to start
   uri:
-    url: "{{ ibp_peer.json.operations_url }}/healthz"
+    url: "{{ ibp_peer.operations_url }}/healthz"
     status_code: "200"
     validate_certs: no
   register: result
@@ -77,9 +92,9 @@
       ibp |
       combine({
         peer.id: {
-          'protocol': ibp_peer.json.api_url | urlsplit('scheme'),
-          'hostname': ibp_peer.json.api_url | urlsplit('hostname'),
-          'port': ibp_peer.json.api_url | urlsplit('port'),
+          'protocol': ibp_peer.api_url | urlsplit('scheme'),
+          'hostname': ibp_peer.api_url | urlsplit('hostname'),
+          'port': ibp_peer.api_url | urlsplit('port'),
           'pem': organization.wallet + '/tls-root.pem' if peer.tls.enabled else ''
         }
       }, recursive=True)

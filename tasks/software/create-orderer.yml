@@ -43,8 +43,7 @@
       ibp_components.json |
       selectattr('cluster_name', 'defined') |
       selectattr('cluster_name', 'eq', orderer.ibp.cluster_name) |
-      list |
-      length
+      list
     }}"
 
 - name: Create orderer
@@ -56,7 +55,7 @@
     body_format: json
     body: "{{ lookup('template', 'software/create-orderer.json.j2') }}"
     validate_certs: no
-  when: ibp_orderer_count == "0"
+  when: not ibp_orderer_count
 
 - name: Get the list of components
   uri:
@@ -70,7 +69,12 @@
 
 - name: Get orderer
   set_fact:
-    ibp_orderer: "{{ ibp_components.json | selectattr('cluster_name', 'defined') | selectattr('cluster_name', 'eq', orderer.ibp.cluster_name) | first }}"
+    ibp_orderer: "{{
+      ibp_components.json |
+      selectattr('cluster_name', 'defined') |
+      selectattr('cluster_name', 'eq', orderer.ibp.cluster_name) |
+      first
+    }}"
 
 - name: Wait for orderer to start
   uri:
