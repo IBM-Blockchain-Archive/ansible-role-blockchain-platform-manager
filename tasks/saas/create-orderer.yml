@@ -53,6 +53,7 @@
       Authorization: "Bearer {{ ibp.saas.access_token }}"
     body_format: json
     body: "{{ lookup('template', 'saas/create-orderer.json.j2') }}"
+  changed_when: True
   when: not ibp_orderer_count
 
 - name: Get the list of components

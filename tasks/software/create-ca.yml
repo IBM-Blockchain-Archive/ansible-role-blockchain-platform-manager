@@ -30,6 +30,7 @@
     body_format: json
     body: "{{ lookup('template', 'software/create-ca.json.j2') }}"
     validate_certs: no
+  changed_when: True
   when: not ibp_ca_count
 
 - name: Get the list of components

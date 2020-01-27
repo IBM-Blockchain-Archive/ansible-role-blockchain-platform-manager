@@ -30,4 +30,5 @@
     body_format: json
     body: "{{ lookup('template', 'software/create-msp.json.j2') }}"
     validate_certs: no
+  changed_when: True
   when: not ibp_msp_count
