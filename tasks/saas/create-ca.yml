@@ -28,6 +28,7 @@
       Authorization: "Bearer {{ ibp.saas.access_token }}"
     body_format: json
     body: "{{ lookup('template', 'saas/create-ca.json.j2') }}"
+  changed_when: True
   when: not ibp_ca_count
 
 - name: Get the list of components

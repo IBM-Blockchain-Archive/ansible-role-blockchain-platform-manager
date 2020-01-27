@@ -28,4 +28,5 @@
       Authorization: "Bearer {{ ibp.saas.access_token }}"
     body_format: json
     body: "{{ lookup('template', 'saas/create-msp.json.j2') }}"
+  changed_when: True
   when: not ibp_msp_count

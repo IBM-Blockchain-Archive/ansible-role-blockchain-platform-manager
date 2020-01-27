@@ -53,6 +53,7 @@
       Authorization: "Bearer {{ ibp.saas.access_token }}"
     body_format: json
     body: "{{ lookup('template', 'saas/create-peer.json.j2') }}"
+  changed_when: True
   when: not ibp_peer_count
 
 - name: Get the list of components
