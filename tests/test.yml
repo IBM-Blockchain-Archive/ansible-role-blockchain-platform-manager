@@ -208,7 +208,7 @@
         package: "{{ playbook_dir }}/fabcar@1.0.0.cds"
         channels:
           - <<: *Channel1
-            endorsement_policy: "AND('Org1MSP.peer','Org2MSP.peer')"
+            endorsement_policy: "AND('Org1MSP.member','Org2MSP.member')"
             endorsing_members:
               - <<: *Org1
                 endorsing_peers:
