@@ -203,7 +203,7 @@
             anchor_peers:
               - *Org2Peer1
     contracts:
-      - package: "{{ playbook_dir }}/fabcar@1.0.0.tgz"
+      - package: "{{ playbook_dir }}/fabcar-1.0.0.tgz"
         channels:
           - <<: *Channel1
             definitions:
