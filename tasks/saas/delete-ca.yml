@@ -22,7 +22,7 @@
 
 - name: Delete certificate authority
   uri:
-    url: "{{ infrastructure.saas.api_endpoint }}/ak/api/v1/components/{{ ibp_ca.id }}"
+    url: "{{ infrastructure.saas.api_endpoint }}/ak/api/v1/kubernetes/components/{{ ibp_ca.id }}"
     method: DELETE
     headers:
       Authorization: "Bearer {{ ibp.saas.access_token }}"

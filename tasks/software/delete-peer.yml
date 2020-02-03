@@ -23,7 +23,7 @@
 
 - name: Delete peer
   uri:
-    url: "{{ infrastructure.software.api_endpoint }}/ak/api/v1/components/{{ ibp_peer.id }}"
+    url: "{{ infrastructure.software.api_endpoint }}/ak/api/v1/kubernetes/components/{{ ibp_peer.id }}"
     url_username: "{{ infrastructure.software.api_key }}"
     url_password: "{{ infrastructure.software.api_secret }}"
     method: DELETE
