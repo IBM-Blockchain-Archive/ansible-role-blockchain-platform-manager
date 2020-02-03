@@ -22,7 +22,7 @@
 
 - name: Delete orderer
   uri:
-    url: "{{ infrastructure.saas.api_endpoint }}/ak/api/v1/components/{{ ibp_orderer.id }}"
+    url: "{{ infrastructure.saas.api_endpoint }}/ak/api/v1/kubernetes/components/{{ ibp_orderer.id }}"
     method: DELETE
     headers:
       Authorization: "Bearer {{ ibp.saas.access_token }}"
