@@ -56,7 +56,7 @@
     validate_certs: no
   register: result
   until: result.status == 200
-  retries: 60
+  retries: 600
   delay: 1
 
 - name: Copy the CA root certificate
@@ -71,7 +71,7 @@
     validate_certs: no
   register: result
   until: result.status == 200
-  retries: 60
+  retries: 600
   delay: 1
 
 - name: Copy the TLS CA root certificate (for all components)
