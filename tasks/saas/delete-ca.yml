@@ -4,7 +4,7 @@
 ---
 - name: Get the list of components
   uri:
-    url: "{{ infrastructure.saas.api_endpoint }}/ak/api/v1/components"
+    url: "{{ infrastructure.saas.api_endpoint }}/ak/api/v1/components?skip_cache=yes"
     method: GET
     return_content: yes
     headers:

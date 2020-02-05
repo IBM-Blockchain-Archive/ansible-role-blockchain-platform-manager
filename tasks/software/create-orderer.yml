@@ -29,7 +29,7 @@
 
 - name: Get the list of components
   uri:
-    url: "{{ infrastructure.software.api_endpoint }}/ak/api/v1/components"
+    url: "{{ infrastructure.software.api_endpoint }}/ak/api/v1/components?skip_cache=yes"
     url_username: "{{ infrastructure.software.api_key }}"
     url_password: "{{ infrastructure.software.api_secret }}"
     method: GET
@@ -60,7 +60,7 @@
 
 - name: Get the list of components
   uri:
-    url: "{{ infrastructure.software.api_endpoint }}/ak/api/v1/components"
+    url: "{{ infrastructure.software.api_endpoint }}/ak/api/v1/components?skip_cache=yes"
     url_username: "{{ infrastructure.software.api_key }}"
     url_password: "{{ infrastructure.software.api_secret }}"
     method: GET
