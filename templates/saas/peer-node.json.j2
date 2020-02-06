@@ -7,5 +7,7 @@
     "pem": "{{ lookup('file', ibp[peer.id].pem) | b64encode }}",
     {% endif %}
     "type": "fabric-peer",
-    "msp_id": "{{ organization.msp.id }}"
+    "msp_id": "{{ organization.msp.id }}",
+    "wallet": "{{ organization.wallet | basename }}",
+    "identity": "{{ organization.msp.admin.identity }}"
 }

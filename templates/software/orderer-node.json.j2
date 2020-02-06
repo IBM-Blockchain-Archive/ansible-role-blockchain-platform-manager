@@ -7,5 +7,7 @@
     "pem": "{{ lookup('file', ibp[orderer.id].pem) | b64encode }}",
     {% endif %}
     "type": "fabric-orderer",
-    "msp_id": "{{ organization.msp.id }}"
+    "msp_id": "{{ organization.msp.id }}",
+    "wallet": "{{ organization.wallet | basename }}",
+    "identity": "{{ organization.msp.admin.identity }}"
 }

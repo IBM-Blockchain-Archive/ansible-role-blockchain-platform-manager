@@ -11,5 +11,7 @@
     "tlsca_name": "{{ ibp[ca.id].tlscaname }}",
     {% endif %}
     "type": "fabric-ca",
-    "msp_id": "{{ organization.msp.id }}"
+    "msp_id": "{{ organization.msp.id }}",
+    "wallet": "{{ organization.wallet | basename }}",
+    "identity": "{{ organization.ca.admin_identity }}"
 }
