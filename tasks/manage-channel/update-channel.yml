@@ -13,8 +13,9 @@
     {{ '--cafile "' + ibp[channel.orderer.id].pem + '"' if ibp[channel.orderer.id].protocol == 'grpcs' else '' }}
     {{ '--ordererTLSHostnameOverride ' + ibp[channel.orderer.id].internal_hostname if ibp[channel.orderer.id].internal_hostname is defined else '' }}
   environment:
-     CORE_PEER_MSPCONFIGPATH: "{{ channel.members[0].wallet }}/{{ channel.members[0].msp.admin.identity }}"
-     CORE_PEER_LOCALMSPID: "{{ channel.members[0].msp.id }}"
+    FABRIC_CFG_PATH: "{{ role_path }}/files/sampleconfig"
+    CORE_PEER_MSPCONFIGPATH: "{{ channel.members[0].wallet }}/{{ channel.members[0].msp.admin.identity }}"
+    CORE_PEER_LOCALMSPID: "{{ channel.members[0].msp.id }}"
   changed_when: False
 
 - name: Decode current channel configuration block
@@ -116,8 +117,9 @@
 - name: Sign channel configuration update envelope
   command: peer channel signconfigtx -f {{ tempdir.path }}/config_update_as_envelope.pb
   environment:
-     CORE_PEER_MSPCONFIGPATH: "{{ member.wallet }}/{{ member.msp.admin.identity }}"
-     CORE_PEER_LOCALMSPID: "{{ member.msp.id }}"
+    FABRIC_CFG_PATH: "{{ role_path }}/files/sampleconfig"
+    CORE_PEER_MSPCONFIGPATH: "{{ member.wallet }}/{{ member.msp.admin.identity }}"
+    CORE_PEER_LOCALMSPID: "{{ member.msp.id }}"
   with_items: "{{ channel.members }}"
   loop_control:
       loop_var: member
@@ -133,6 +135,7 @@
     {{ '--cafile "' + ibp[channel.orderer.id].pem + '"' if ibp[channel.orderer.id].protocol == 'grpcs' else '' }}
     {{ '--ordererTLSHostnameOverride ' + ibp[channel.orderer.id].internal_hostname if ibp[channel.orderer.id].internal_hostname is defined else '' }}
   environment:
-     CORE_PEER_MSPCONFIGPATH: "{{ channel.members[0].wallet }}/{{ channel.members[0].msp.admin.identity }}"
-     CORE_PEER_LOCALMSPID: "{{ channel.members[0].msp.id }}"
+    FABRIC_CFG_PATH: "{{ role_path }}/files/sampleconfig"
+    CORE_PEER_MSPCONFIGPATH: "{{ channel.members[0].wallet }}/{{ channel.members[0].msp.admin.identity }}"
+    CORE_PEER_LOCALMSPID: "{{ channel.members[0].msp.id }}"
   when: compute_update.rc == 0
