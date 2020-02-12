@@ -47,6 +47,18 @@
     loop_var: member
   changed_when: False
 
+- name: Update block configuration in system channel configuration
+  shell: >
+    set -o pipefail &&
+    jq
+    --argjson values '{{ lookup('template', 'manage-consortium/fabric-orderer-values.json.j2') | to_json }}'
+    '.channel_group.groups.Orderer.values *= $values'
+    {{ tempdir.path }}/updated_config.json |
+    sponge {{ tempdir.path }}/updated_config.json
+  args:
+    executable: /bin/bash
+  changed_when: False
+
 - name: Encode current system channel configuration
   command: configtxlator proto_encode --type=common.Config --input={{ tempdir.path }}/config.json --output={{ tempdir.path }}/config.pb
   changed_when: False

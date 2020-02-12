@@ -246,6 +246,16 @@ Example Playbook
             members:
               # Reference to the organization Org1.
               - *Org1
+          # Block cutting configuration for this orderer.
+          block_configuration:
+            # The absolute maximum size of a block in bytes.
+            absolute_max_bytes: 10485760
+            # The maximum number of messages in a block.
+            max_message_count: 500
+            # The preferred maximum size of a block in bytes.
+            preferred_max_bytes: 2097152.
+            # The maximum time to wait before cutting a new block.
+            timeout: 2s
           # Docker specific configuration.
           docker:
             # The name to use for this Docker container and associated Docker volumes.
