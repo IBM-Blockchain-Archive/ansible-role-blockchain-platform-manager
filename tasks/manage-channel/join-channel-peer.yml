@@ -5,11 +5,12 @@
 - name: Retrieve current channel information
   command: peer channel getinfo -c {{ channel.name }}
   environment:
-      CORE_PEER_ADDRESS: "{{ ibp[peer.id].hostname }}:{{ ibp[peer.id].port }}"
-      CORE_PEER_MSPCONFIGPATH: "{{ member.wallet }}/{{ member.msp.admin.identity }}"
-      CORE_PEER_LOCALMSPID: "{{ member.msp.id }}"
-      CORE_PEER_TLS_ENABLED: "{{ 'true' if peer.tls.enabled else 'false' }}"
-      CORE_PEER_TLS_ROOTCERT_FILE: "{{ ibp[peer.id].pem if ibp[peer.id].pem is defined }}"
+    FABRIC_CFG_PATH: "{{ role_path }}/files/sampleconfig"
+    CORE_PEER_ADDRESS: "{{ ibp[peer.id].hostname }}:{{ ibp[peer.id].port }}"
+    CORE_PEER_MSPCONFIGPATH: "{{ member.wallet }}/{{ member.msp.admin.identity }}"
+    CORE_PEER_LOCALMSPID: "{{ member.msp.id }}"
+    CORE_PEER_TLS_ENABLED: "{{ 'true' if peer.tls.enabled else 'false' }}"
+    CORE_PEER_TLS_ROOTCERT_FILE: "{{ ibp[peer.id].pem if ibp[peer.id].pem is defined }}"
   register: channel_getinfo
   failed_when: False
   changed_when: False
@@ -21,9 +22,10 @@
 - name: Join peer to channel
   command: peer channel join -b {{ tempdir.path }}/config_block.pb
   environment:
-      CORE_PEER_ADDRESS: "{{ ibp[peer.id].hostname }}:{{ ibp[peer.id].port }}"
-      CORE_PEER_MSPCONFIGPATH: "{{ member.wallet }}/{{ member.msp.admin.identity }}"
-      CORE_PEER_LOCALMSPID: "{{ member.msp.id }}"
-      CORE_PEER_TLS_ENABLED: "{{ 'true' if peer.tls.enabled else 'false' }}"
-      CORE_PEER_TLS_ROOTCERT_FILE: "{{ ibp[peer.id].pem if ibp[peer.id].pem is defined }}"
+    FABRIC_CFG_PATH: "{{ role_path }}/files/sampleconfig"
+    CORE_PEER_ADDRESS: "{{ ibp[peer.id].hostname }}:{{ ibp[peer.id].port }}"
+    CORE_PEER_MSPCONFIGPATH: "{{ member.wallet }}/{{ member.msp.admin.identity }}"
+    CORE_PEER_LOCALMSPID: "{{ member.msp.id }}"
+    CORE_PEER_TLS_ENABLED: "{{ 'true' if peer.tls.enabled else 'false' }}"
+    CORE_PEER_TLS_ROOTCERT_FILE: "{{ ibp[peer.id].pem if ibp[peer.id].pem is defined }}"
   when: not joined_channel

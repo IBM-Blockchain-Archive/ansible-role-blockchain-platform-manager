@@ -13,9 +13,6 @@ trigger:
 pool:
   vmImage: "ubuntu-latest"
 
-variables:
-  FABRIC_CFG_PATH: /usr/local/config
-
 steps:
   - script: sudo apt-get update && sudo apt-get install -y moreutils
     displayName: Install Ubuntu dependencies

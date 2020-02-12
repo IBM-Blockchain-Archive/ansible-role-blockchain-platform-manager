@@ -16,7 +16,6 @@ RUN mkdir /lib64 && \
     wget -qO fabric-ca-bins.tar.gz https://github.com/hyperledger/fabric-ca/releases/download/v1.4.4/hyperledger-fabric-ca-linux-amd64-1.4.4.tar.gz && \
     tar xvf fabric-ca-bins.tar.gz -C /usr/local && \
     rm fabric-bins.tar.gz fabric-ca-bins.tar.gz
-ENV FABRIC_CFG_PATH=/usr/local/config
 COPY ansible-role-blockchain-platform-manager.tar.gz /usr/local/src/
 RUN mkdir -p /etc/ansible/roles/ibm.blockchain_platform_manager && \
     cd /etc/ansible/roles/ibm.blockchain_platform_manager && \
