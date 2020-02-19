@@ -44,6 +44,7 @@
     -v {{ contract.version }}
     -P {{ channel.endorsement_policy | quote }}
     -o {{ ibp[channel.orderer.id].hostname }}:{{ ibp[channel.orderer.id].port }}
+    {{ '--collections-config "' + channel.collections_config + '"' if channel.collections_config is defined else '' }}
     {{ '--tls' if ibp[channel.orderer.id].protocol == 'grpcs' else '' }}
     {{ '--cafile "' + ibp[channel.orderer.id].pem + '"' if ibp[channel.orderer.id].protocol == 'grpcs' else '' }}
     {{ '--ordererTLSHostnameOverride ' + ibp[channel.orderer.id].internal_hostname if ibp[channel.orderer.id].internal_hostname is defined else '' }}
@@ -65,6 +66,7 @@
     -v {{ contract.version }}
     -P {{ channel.endorsement_policy | quote }}
     -o {{ ibp[channel.orderer.id].hostname }}:{{ ibp[channel.orderer.id].port }}
+    {{ '--collections-config "' + channel.collections_config + '"' if channel.collections_config is defined else '' }}
     {{ '--tls' if ibp[channel.orderer.id].protocol == 'grpcs' else '' }}
     {{ '--cafile "' + ibp[channel.orderer.id].pem + '"' if ibp[channel.orderer.id].protocol == 'grpcs' else '' }}
     {{ '--ordererTLSHostnameOverride ' + ibp[channel.orderer.id].internal_hostname if ibp[channel.orderer.id].internal_hostname is defined else '' }}
