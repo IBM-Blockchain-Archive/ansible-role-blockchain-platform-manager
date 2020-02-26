@@ -126,7 +126,7 @@
 - name: Start peer container
   docker_container:
     name: "{{ peer.docker.name }}"
-    image: hyperledger/fabric-peer:1.4.4
+    image: hyperledger/fabric-peer:1.4.6
     networks:
       - name: "{{ infrastructure.docker.network }}"
         aliases:
@@ -143,7 +143,7 @@
       CORE_PEER_GOSSIP_EXTERNALENDPOINT: "{{ peer.docker.hostname }}:{{ peer.docker.port }}"
       CORE_PEER_TLS_ENABLED: "{{ 'true' if peer.tls.enabled else 'false' }}"
       CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE: "{{ infrastructure.docker.network }}"
-      CORE_CHAINCODE_BUILDER: hyperledger/fabric-ccenv:1.4.4
+      CORE_CHAINCODE_BUILDER: hyperledger/fabric-ccenv:1.4.6
       CORE_CHAINCODE_GOLANG_RUNTIME: hyperledger/fabric-baseos:0.4.18
       CORE_CHAINCODE_JAVA_RUNTIME: hyperledger/fabric-javaenv:1.4.4
       CORE_CHAINCODE_NODE_RUNTIME: hyperledger/fabric-baseimage:0.4.18
