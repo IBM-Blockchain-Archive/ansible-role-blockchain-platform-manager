@@ -95,7 +95,7 @@
 - name: Start orderer container
   docker_container:
     name: "{{ orderer.docker.name }}"
-    image: hyperledger/fabric-orderer:1.4.4
+    image: hyperledger/fabric-orderer:1.4.6
     networks:
       - name: "{{ infrastructure.docker.network }}"
         aliases:

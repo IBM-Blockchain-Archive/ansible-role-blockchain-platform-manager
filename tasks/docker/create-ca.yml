@@ -16,7 +16,7 @@
 - name: Create certificate authority container
   docker_container:
     name: "{{ ca.docker.name }}"
-    image: hyperledger/fabric-ca:1.4.4
+    image: hyperledger/fabric-ca:1.4.6
     networks:
       - name: "{{ infrastructure.docker.network }}"
         aliases:
