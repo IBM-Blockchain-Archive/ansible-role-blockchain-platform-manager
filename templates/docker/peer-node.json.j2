@@ -2,8 +2,8 @@
 {
     "short_name": "{{ peer.id }}",
     "name": "{{ peer.id }}",
-    "api_url": "{{ ibp[peer.id].protocol }}://{{ ibp[peer.id].hostname }}:{{ ibp[peer.id].port }}",
-    "chaincode_url": "{{ ibp[peer.id].protocol }}://{{ ibp[peer.id].hostname }}:{{ ibp[peer.id].chaincode_port }}",
+    "api_url": "{{ ibp[peer.id].protocol }}://{{ ibp[peer.id].internal_hostname if (infrastructure.docker.use_internal_hostname | default(false)) else ibp[peer.id].hostname }}:{{ ibp[peer.id].port }}",
+    "chaincode_url": "{{ ibp[peer.id].protocol }}://{{ ibp[peer.id].internal_hostname if (infrastructure.docker.use_internal_hostname | default(false)) else ibp[peer.id].hostname }}:{{ ibp[peer.id].chaincode_port }}",
     {% if ibp[peer.id].protocol == 'grpcs' %}
     "pem": "{{ lookup('file', ibp[peer.id].pem) | b64encode }}",
     {% endif %}

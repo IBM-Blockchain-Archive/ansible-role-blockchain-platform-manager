@@ -2,7 +2,7 @@
 {
     "short_name": "{{ ca.id }}",
     "name": "{{ ca.id }}",
-    "api_url": "{{ ibp[ca.id].protocol }}://{{ ibp[ca.id].hostname }}:{{ ibp[ca.id].port }}",
+    "api_url": "{{ ibp[ca.id].protocol }}://{{ ibp[ca.id].internal_hostname if (infrastructure.docker.use_internal_hostname | default(false)) else ibp[ca.id].hostname }}:{{ ibp[ca.id].port }}",
     {% if ibp[ca.id].protocol == 'https' %}
     "pem": "{{ lookup('file', ibp[ca.id].pem) | b64encode }}",
     {% endif %}
@@ -16,3 +16,4 @@
     "wallet": "{{ organization.wallet | basename }}",
     "identity": "{{ organization.ca.admin_identity }}"
 }
+{#    "api_url": "{{ ibp[ca.id].protocol }}://{{ ibp[ca.id].hostname }}:{{ ibp[ca.id].port }}", #}

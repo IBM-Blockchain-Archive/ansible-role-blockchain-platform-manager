@@ -72,6 +72,8 @@ Example Playbook
         # The Docker object labels to apply to all containers and volumes.
         labels:
           org.example.label: example label value
+        # Generate node and gateway information using internal hostnames?
+        use_internal_hostname:
       # IBM Blockchain Platform on IBM Cloud specific configuration.
       # In this example, service credentials are loaded from a JSON file.
       # You must supply both "api_endpoint" and "apikey" properties.
