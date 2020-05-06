@@ -41,7 +41,7 @@
             },
             {% endif %}
             {% endif %}
-            "url": "{{ ibp[gateway_peer.id].protocol }}://{{ ibp[gateway_peer.id].hostname }}:{{ ibp[gateway_peer.id].port }}"
+            "url": "{{ ibp[gateway_peer.id].protocol }}://{{ ibp[gateway_peer.id].internal_hostname if (infrastructure.docker.use_internal_hostname | default(false)) else ibp[gateway_peer.id].hostname }}:{{ ibp[gateway_peer.id].port }}"
         }{%- if not loop.last -%},{% endif %}
         {% endfor %}
     },
@@ -52,7 +52,7 @@
                 "pem": {{ lookup('file', ibp[gateway.organization.ca.id].pem) | to_json }}
             },
             {% endif %}
-            "url": "{{ ibp[gateway.organization.ca.id].protocol }}://{{ ibp[gateway.organization.ca.id].hostname }}:{{ ibp[gateway.organization.ca.id].port }}",
+            "url": "{{ ibp[gateway.organization.ca.id].protocol }}://{{ ibp[gateway.organization.ca.id].internal_hostname if (infrastructure.docker.use_internal_hostname | default(false)) else ibp[gateway.organization.ca.id].hostname }}:{{ ibp[gateway.organization.ca.id].port }}",
             "caName": "{{ ibp[gateway.organization.ca.id].caname }}"
         }
     }
