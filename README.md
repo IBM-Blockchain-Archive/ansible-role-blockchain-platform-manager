@@ -316,6 +316,9 @@ Example Playbook
           - <<: *channel1
             # The endorsement policy for this contract on this channel.
             endorsement_policy: "AND('Org1MSP.peer')"
+            # The path to the file containing the private data collection configuration
+            # for this contract on this channel.
+            collections_config: "{{ playbook_dir }}/collections-config.json"
             # The list of endorsing members for this contract on this channel.
             endorsing_members:
               # Reference to the organization Org1.
