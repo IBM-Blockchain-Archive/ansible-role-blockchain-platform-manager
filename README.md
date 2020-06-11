@@ -300,33 +300,32 @@ Example Playbook
               - *Org1Peer1
     # The list of contracts.
     contracts:
-      # The contract fabcar.
-      - &fabcar
-        # The name of the contract.
-        name: fabcar
-        # The version of the contract.
-        version: 1.0.0
-        # The path to the file containing the packaged contract. This file can be created
-        # using the "peer chaincode package" command, one of the Fabric SDKs, or the IBM
-        # Blockchain Platform extension for Visual Studio Code.
-        package: "{{ playbook_dir }}/fabcar@1.0.0.cds"
-        # The list of channels to deploy this contract into.
-        channels:
-          # Reference to the channel channel1.
-          - <<: *channel1
-            # The endorsement policy for this contract on this channel.
-            endorsement_policy: "AND('Org1MSP.peer')"
-            # The path to the file containing the private data collection configuration
-            # for this contract on this channel.
-            collections_config: "{{ playbook_dir }}/collections-config.json"
-            # The list of endorsing members for this contract on this channel.
-            endorsing_members:
-              # Reference to the organization Org1.
-              - <<: *Org1
-                # The list of endorsing peers for this organization.
-                endorsing_peers:
-                  # Reference to the first peer for this organization.
-                  - <<: *Org1Peer1
+    # The path to the file containing the packaged contract. This file can be created
+    # using the "peer chaincode package" command, one of the Fabric SDKs, or the IBM
+    # Blockchain Platform extension for Visual Studio Code.
+    - package: "{{ playbook_dir }}/fabcar-1.0.0.tgz"
+      # The list of channels to deploy this contract into.
+      channels:
+        # Reference to the channel channel1.
+        - <<: *channel1
+          definitions:
+            # The name of the contract.
+            - name: fabcar
+              # The version of the contract.
+              version: 1.0.0
+              # The endorsement policy for this contract on this channel.
+              endorsement_policy: "AND('Org1MSP.peer')"
+              # The path to the file containing the private data collection configuration
+              # for this contract on this channel.
+              collections_config: "{{ playbook_dir }}/collections-config.json"
+              # The list of endorsing members for this contract on this channel.
+              endorsing_members:
+                # Reference to the organization Org1.
+                - <<: *Org1
+                  # The list of endorsing peers for this organization.
+                  endorsing_peers:
+                    # Reference to the first peer for this organization.
+                    - <<: *Org1Peer1
     # The list of gateways.
     gateways:
       # The gateway gateway1.
