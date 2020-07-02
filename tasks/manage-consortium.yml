@@ -38,7 +38,7 @@
     set -o pipefail &&
     jq
     --argjson msp '{{ lookup('template', 'manage-consortium/fabric-msp.json.j2') | to_json }}'
-    '.channel_group.groups.Consortiums.groups.SampleConsortium.groups.{{ member.msp.id }} = $msp'
+    '.channel_group.groups.Consortiums.groups.SampleConsortium.groups."{{ member.msp.id }}" = $msp'
     {{ tempdir.path }}/updated_config.json |
     sponge {{ tempdir.path }}/updated_config.json
   args:
