@@ -39,7 +39,7 @@
     set -o pipefail &&
     jq
     --argjson msp '{{ lookup('template', 'manage-channel/fabric-msp.json.j2') | to_json }}'
-    '.channel_group.groups.Application.groups.{{ member.msp.id }} = $msp'
+    '.channel_group.groups.Application.groups."{{ member.msp.id }}" = $msp'
     {{ tempdir.path }}/updated_config.json |
     sponge {{ tempdir.path }}/updated_config.json
   args:
@@ -54,7 +54,7 @@
     set -o pipefail &&
     jq
     --argjson anchorPeers '{{ lookup('template', 'manage-channel/fabric-anchor-peers.json.j2') | to_json }}'
-    '.channel_group.groups.Application.groups.{{ member.msp.id }}.values.AnchorPeers = $anchorPeers'
+    '.channel_group.groups.Application.groups."{{ member.msp.id }}".values.AnchorPeers = $anchorPeers'
     {{ tempdir.path }}/updated_config.json |
     sponge {{ tempdir.path }}/updated_config.json
   args:
