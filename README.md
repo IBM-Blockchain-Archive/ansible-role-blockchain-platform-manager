@@ -3,6 +3,24 @@ ansible-role-blockchain-platform-manager
 
 [![Build Status](https://dev.azure.com/IBM-Blockchain/ansible-role-blockchain-platform-manager/_apis/build/status/IBM-Blockchain.ansible-role-blockchain-platform-manager?branchName=master)](https://dev.azure.com/IBM-Blockchain/ansible-role-blockchain-platform-manager/_build/latest?definitionId=1&branchName=master)
 
+⚠️ ⚠️ ⚠️
+
+The IBM Blockchain Platform 2.5 release includes a new Ansible collection that can be used to build, operate & govern and grow blockchain networks.
+
+The Ansible collection can be found here:
+- Ansible collection documentation (https://ibm-blockchain.github.io/ansible-collection/)
+- IBM Blockchain Platform documentation (https://cloud.ibm.com/docs/blockchain?topic=blockchain-ansible)
+- Ansible Galaxy (https://galaxy.ansible.com/ibm/blockchain_platform)
+- GitHub (https://github.com/IBM-Blockchain/ansible-collection/)
+
+Support for the Ansible collection is included as part of the IBM Blockchain Platform.
+
+It is strongly recommended that you use the Ansible collection instead of this Ansible role.
+
+You should only use this Ansible role if you are building development networks and you wish to build a local network using Docker.
+
+⚠️ ⚠️ ⚠️
+
 The IBM Blockchain Platform provides advanced tooling that allows you to quickly build, operate & govern and grow blockchain networks. It uses Hyperledger Fabric, the open source, industry standard for enterprise blockchain. It also helps you to deploy Hyperledger Fabric networks anywhere, either to cloud or on-premises, using Kubernetes.
 
 This Ansible role, provided as part of the IBM Blockchain Platform, enables you to automate the building of Hyperledger Fabric networks.
