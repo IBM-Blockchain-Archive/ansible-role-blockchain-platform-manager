@@ -30,7 +30,7 @@ steps:
     displayName: Download Fabric CLI
   - script: |
       set -ex
-      wget -qO fabric-ca-bins.tar.gz https://github.com/hyperledger/fabric-ca/releases/download/v1.4.4/hyperledger-fabric-ca-linux-amd64-1.4.4.tar.gz
+      wget -qO fabric-ca-bins.tar.gz https://github.com/hyperledger/fabric-ca/releases/download/v1.4.7/hyperledger-fabric-ca-linux-amd64-1.4.7.tar.gz
       sudo tar xvf fabric-ca-bins.tar.gz -C /usr/local
       rm fabric-ca-bins.tar.gz
     displayName: Download Fabric CA CLI
