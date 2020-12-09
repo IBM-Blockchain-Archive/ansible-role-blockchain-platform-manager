@@ -33,7 +33,7 @@
     caname: "{{ ibp[organization.ca.id].caname }}"
     identity: "{{ organization.msp.admin.identity }}"
     secret: "{{ organization.msp.admin.secret }}"
-    type: client
+    type: admin
     registrar: "{{ organization.ca.admin_identity }}"
 
 - name: Enroll the admin user for the MSP
