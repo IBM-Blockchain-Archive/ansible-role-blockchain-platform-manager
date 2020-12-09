@@ -11,7 +11,7 @@
     caname: "{{ ibp[organization.ca.id].caname }}"
     identity: "{{ peer.identity }}"
     secret: "{{ peer.secret }}"
-    type: admin
+    type: peer
     registrar: "{{ organization.ca.admin_identity }}"
 
 - name: Register the TLS user for the peer
@@ -23,7 +23,7 @@
     caname: "{{ ibp[organization.ca.id].tlscaname }}"
     identity: "{{ peer.tls.identity }}"
     secret: "{{ peer.tls.secret }}"
-    type: admin
+    type: peer
     registrar: "{{ organization.ca.admin_identity }}"
   when: peer.tls.enabled
 
