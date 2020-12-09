@@ -11,7 +11,7 @@
     caname: "{{ ibp[organization.ca.id].caname }}"
     identity: "{{ orderer.identity }}"
     secret: "{{ orderer.secret }}"
-    type: orderer
+    type: peer
     registrar: "{{ organization.ca.admin_identity }}"
 
 - name: Register the TLS user for the orderer
@@ -23,7 +23,7 @@
     caname: "{{ ibp[organization.ca.id].tlscaname }}"
     identity: "{{ orderer.tls.identity }}"
     secret: "{{ orderer.tls.secret }}"
-    type: orderer
+    type: peer
     registrar: "{{ organization.ca.admin_identity }}"
   when: orderer.tls.enabled
 
