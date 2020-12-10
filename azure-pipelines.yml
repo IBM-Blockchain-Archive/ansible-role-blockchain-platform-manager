@@ -36,7 +36,7 @@ steps:
     displayName: Download Fabric CA CLI
   - script: |
       set -ex
-      ansible-lint .
+      ansible-lint . -x 208
       yamllint .
     displayName: Lint
   - script: |
