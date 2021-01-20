@@ -5,6 +5,8 @@ ansible-role-blockchain-platform-manager
 
 ⚠️ ⚠️ ⚠️
 
+This Ansible role is now deprecated and no longer maintained.
+
 The IBM Blockchain Platform 2.5 release includes a new Ansible collection that can be used to build, operate & govern and grow blockchain networks.
 
 The Ansible collection can be found here:
@@ -16,8 +18,6 @@ The Ansible collection can be found here:
 Support for the Ansible collection is included as part of the IBM Blockchain Platform.
 
 It is strongly recommended that you use the Ansible collection instead of this Ansible role.
-
-You should only use this Ansible role if you are building development networks and you wish to build a local network using Docker.
 
 ⚠️ ⚠️ ⚠️
 
